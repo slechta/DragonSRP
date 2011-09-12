@@ -24,7 +24,7 @@ namespace Dsrp
 			virtual bytes calculateB(bytes verificator, bytes bb)=0; // b must be random
 			virtual bytes calculateU(bytes AA, bytes BB);
 			virtual bytes calculateSserver(bytes AA, bytes verificator, bytes uu, bytes bb)=0;
-			virtual bytes calculateSclient(bytes BB, bytes xx, bytes aa, bytes uu)=0;
+			virtual bool calculateSclient(const bytes &BB, const bytes &xx, const bytes &aa, const bytes &uu, bytes &Sout)=0;
 			virtual bytes generateRandom(unsigned int bits)=0; // Maybe other class
 			
 		protected:	

@@ -24,4 +24,9 @@ namespace Dsrp
 		free(arr);
 		return ret;
 	}
+	
+	unsigned int OsslSha256::ouputLen()
+	{
+		return SHA256_DIGEST_LENGTH;
+	}
 }

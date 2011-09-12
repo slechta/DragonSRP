@@ -12,7 +12,7 @@ namespace Dsrp
 	{
 		public:
 			virtual bytes hash(bytes)=0;
-			
+			virtual unsigned int ouputLen()=0;
 		protected:
 		
 		private:

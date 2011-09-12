@@ -153,11 +153,55 @@ namespace Dsrp
 		return result;
 	}
 	
+	
+	// true - security check passed
+	// false - security check failed
+	// S = (B - k*(g^x)) ^ (a + ux)
 	template<class HashFunctionPolicy> 
-	bytes OsslMathImpl<HashFunctionPolicy>::calculateSclient
-	(bytes BB, bytes xx, bytes aa, bytes uu)
+	bool OsslMathImpl<HashFunctionPolicy>::calculateSclient
+	(const bytes &BB, const bytes &xx, const bytes &aa, const bytes &uu, bytes &Sout)
 	{
+		// Safety SRP6a check necessary !!!!!!!!!!
+		bool rval = true; // default fail
 		
+		BIGNUM *B = BN_new();
+		BIGNUM *x = BN_new();
+		BIGNUM *a = BN_new();
+		BIGNUM *u = BN_new();
+		BIGNUM *tmp1 = BN_new();
+		BIGNUM *tmp2 = BN_new();
+		BIGNUM *tmp3 = BN_new();
+		BIGNUM *S = BN_new();
+		
+		bytes2bignum(BB, B);
+		bytes2bignum(uu, u);
+		
+		// SRP-6a safety check
+		if (!BN_is_zero(B) && !BN_is_zero(u))
+		{
+			bytes2bignum(xx, x);
+			bytes2bignum(aa, a);
+			BN_mod_mul(tmp1, u, x, N, ctx);		/* tmp1 = ux */
+			BN_mod_add(tmp2, a, tmp1, N, ctx);             /* tmp2 = a+ux  */
+			BN_mod_exp(tmp1, g, x, N, ctx); /* tmp1 = (g^x)%N */
+			BN_mod_mul(tmp3, k, tmp1, N, ctx);             /* tmp3 = k*((g^x)%N)       */
+			BN_sub(tmp1, B, tmp3);                  /* tmp1 = (B-k*((g^x)%N) */
+			BN_mod_exp(S, tmp1, tmp2, N, ctx); /* S = ((B-k*((g^x)%N)^(a+ux)%N) */
+			
+			bignum2bytes(S, Sout);
+			rval = false;
+		}
+		
+		BN_free(B);
+		BN_free(x);
+		BN_free(a);
+		BN_free(u);
+		BN_free(tmp1);
+		BN_free(tmp2);
+		BN_free(tmp3);
+		BN_free(S);
+		
+		return rval;
 	}
 	
 	template<class HashFunctionPolicy>
@@ -166,4 +210,104 @@ namespace Dsrp
 	{
 		
 	}
+	
+	// u = H(A || B)
+	// x = H(salt || H(username || ":" || password)
+	// S = (B - k*(g^x)) ^ (a + ux)
+	// K = H(S)
+	template<class HashFunctionPolicy>
+	int OsslMathImpl<HashFunctionPolicy>::clientChallenge
+	(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &S_out, bytes &M1_out)
+	{
+		// Safety SRP6a check necessary !!!!!!!!!!
+		bool rval = true; // default fail
+		
+		BIGNUM *B = BN_new();
+		BIGNUM *x = BN_new();
+		BIGNUM *a = BN_new();
+		BIGNUM *u = BN_new();
+		BIGNUM *tmp1 = BN_new();
+		BIGNUM *tmp2 = BN_new();
+		BIGNUM *tmp3 = BN_new();
+		BIGNUM *S = BN_new();
+		
+		// Calculate u = H(A || B)
+		HashFunctionPolicy hf;
+		bytes AandB = AA;
+		AandB.insert(AandB.end(), BB.begin(), BB.end());
+		bytes uu = hf.hash(AandB);
+		bytes2bignum(uu, u);
+		bytes2bignum(BB, B);
+		
+		// Calculate x = HASH(salt || HASH(username || ":" || password)
+		unsigned char *colon = ':';
+		bytes sup = salt;
+		sup.insert(sup.end(), username.begin(), username.end());
+		sup.insert(sup.end(), colon, colon + 1);
+		sup.insert(sup.end(), password.begin(), password.end());
+		bytes hashTmp = hf.hash(sup);
+		hashTmp.insert(sup.begin(), salt.begin(), salt.end());
+		sup = hf.hash(hashTmp);
+		bytes2bignum(sup, x);
+		
+		//Calculate S
+		// SRP-6a safety check
+		if (!BN_is_zero(B) && !BN_is_zero(u))
+		{
+			bytes2bignum(aa, a);
+			BN_mod_mul(tmp1, u, x, N, ctx);	   /* tmp1 = ux */
+			BN_mod_add(tmp2, a, tmp1, N, ctx); /* tmp2 = a+ux  */
+			BN_mod_exp(tmp1, g, x, N, ctx);    /* tmp1 = (g^x)%N */
+			BN_mod_mul(tmp3, k, tmp1, N, ctx); /* tmp3 = k*((g^x)%N)       */
+			BN_sub(tmp1, B, tmp3);             /* tmp1 = (B-k*((g^x)%N) */
+			BN_mod_exp(S, tmp1, tmp2, N, ctx); /* S = ((B-k*((g^x)%N)^(a+ux)%N) */
+			
+			bignum2bytes(S, S_out);
+			rval = false;
+		}
+		
+		// Calculate K
+		bytes KK = hf.hash(S);
+		
+		// Calculate M1
+		M1_out = calculateM1(username, salt, AA, BB, KK);
+		
+		
+		BN_free(B);
+		BN_free(x);
+		BN_free(a);
+		BN_free(u);
+		BN_free(tmp1);
+		BN_free(tmp2);
+		BN_free(tmp3);
+		BN_free(S);
+		
+		return rval;
+	}
+	
+	
+	// M = H(H(N) XOR H(g) | H(username) | s | A | B | K)
+	template<class HashFunctionPolicy>
+	bytes OsslMathImpl<HashFunctionPolicy>::calculateM1
+	(const bytes &username, const bytes &s, const bytes &A, const bytes &B, const bytes &K)
+	{
+		HashFunctionPolicy hf;
+        bytes H_N = hf.hash(N);
+        bytes H_g = hf.hash(g);
+        bytes H_username = hf.hash(username);
+        bytes H_xor;
+		
+        H_xor.resize(hf.outputLen());
+		for (int i = 0; i < hf.outputLen(); i++ ) H_xor[i] = H_N[i] ^ H_g[i];
+    
+		bytes toHash = H_xor;
+		toHash.insert(toHash.end(), H_username.begin(), H_username.end());
+		toHash.insert(toHash.end(), s.begin(), s.end());
+		toHash.insert(toHash.end(), A.begin(), A.end());
+		toHash.insert(toHash.end(), B.begin(), B.end());
+		toHash.insert(toHash.end(), K.begin(), K.end());
+		
+		return hf.hash(toHash);
+	}
+	
 }

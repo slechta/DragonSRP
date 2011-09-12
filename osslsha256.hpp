@@ -10,7 +10,7 @@ namespace Dsrp
 	{
 		protected:
 			bytes hash(bytes);
-			
+			unsigned int ouputLen();
 		private:
 	};
 }
