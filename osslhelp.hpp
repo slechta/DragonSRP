@@ -8,6 +8,7 @@
 namespace Dsrp
 {
 	void bytes2bignum(const bytes &in, BIGNUM *out);
+	void bignum2bytes(BIGNUM *in, bytes& out);
 }
 
 #endif

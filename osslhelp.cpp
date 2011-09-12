@@ -13,4 +13,12 @@ namespace Dsrp
 		BN_bin2bn(bytesIn, in.size(), out);
 		free(bytesIn);
 	}
+	
+	void bignum2bytes(BIGNUM *in, bytes& out)
+	{
+		int len = BN_num_bytes(in);
+		unsigned char *bytes = (unsigned char *) malloc(sizeof(unsigned char) * len);
+		copy(bytes, bytes + len, out.begin());
+		free(bytes);
+	}
 }
