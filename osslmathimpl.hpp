@@ -20,14 +20,16 @@ namespace Dsrp
 			~OsslMathImpl();
 			bytes setNg(Ng<HashFunctionPolicy> ng); // Must be called first
 			bytes calculateA(bytes aa); // a must be random
+			bool AisOK(bytes AA);
 			bytes calculateB(bytes verificator, bytes bb); // b must be random
-			bytes calculateSserver(bytes A, bytes verificator, bytes u, bytes b);
-			bytes calculateSclient(bytes B, bytes x, bytes a, bytes u);
+			bytes calculateSserver(bytes AA, bytes verificator, bytes uu, bytes bb);
+			bytes calculateSclient(bytes BB, bytes xx, bytes aa, bytes uu);
 			bytes generateRandom(unsigned int bits);
 			
 		private:
 			BIGNUM *N;
 			BIGNUM *g;
+			BIGNUM *k;
 			BN_CTX *ctx;
 	};
 }

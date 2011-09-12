@@ -11,7 +11,8 @@ namespace Dsrp
 	class Ng: public HashFunctionPolicy
 	{
 		public:
-			Ng(bytes N, bytes g);
+			Ng(bytes NN, bytes gg);
+			Ng(Ng& copy);
 			bytes getN();
 			bytes getg();
 			bytes getk();

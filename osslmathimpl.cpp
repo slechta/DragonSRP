@@ -8,6 +8,7 @@ namespace Dsrp
 	OsslMathImpl<HashFunctionPolicy>::OsslMathImpl() :
 		N(BN_new()),
 		g(BN_new()),
+		k(BN_new()),
 		ctx(BN_CTX_new())
 	{
 		
@@ -18,6 +19,7 @@ namespace Dsrp
 	{
 		BN_free(N);
 		BN_free(g);
+		BN_free(k);
 		BN_CTX_free(ctx);
 	}
 	
@@ -29,6 +31,7 @@ namespace Dsrp
 		// set that we set Ng as bool
 		bytes2bignum(ng.getN(), N);
 		bytes2bignum(ng.getg(), g);
+		bytes2bignum(ng.getk(), k);
 	}
 	
 	template<class HashFunctionPolicy>
@@ -50,24 +53,68 @@ namespace Dsrp
 		return ret;
 	}
 	
+	// constraint safety check
+	template<class HashFunctionPolicy>
+	bool OsslMathImpl<HashFunctionPolicy>::AisOK(bytes AA)
+	{
+		/* SRP-6a safety check */
+		BIGNUM *A = BN_new();
+		BIGNUM *tmp1 = BN_new();
+		
+		bytes2bignum(AA, A);
+		
+		BN_mod(tmp1, A, N, ctx);
+		bool ret = !BN_is_zero(tmp1);
+		BN_free(A);
+		BN_free(tmp1);
+		return ret;
+	}
+	
+	// B = k*v + g^b
 	template<class HashFunctionPolicy>
 	bytes OsslMathImpl<HashFunctionPolicy>::calculateB
-	(bytes verificator, bytes b)
+	(bytes verificator, bytes bb)
 	{
+		BIGNUM *b = BN_new();
+		BIGNUM *B = BN_new();
+		BIGNUM *v = BN_new();
+		BIGNUM *tmp1 = BN_new();
+		BIGNUM *tmp2 = BN_new();
+
+		bytes2bignum(bb, b);
+		bytes2bignum(verificator, v);
 		
+		// there is neccessary to add the SRP6a security check
+		// /* SRP-6a safety check */
+        //  BN_mod(tmp1, A, ng->N, ctx);
+		
+		BN_mod_mul(tmp1, k, v, N, ctx); // tmp1 = k * v
+        BN_mod_exp(tmp2, g, b, N, ctx); // tmp2 = (g ^ b) % N
+        BN_mod_add(B, tmp1, tmp2, N, ctx); // B = k * v + (g ^ b) % N
+		
+		bytes ret;
+		bignum2bytes(B, ret);
+		
+		BN_free(b);
+		BN_free(v);
+		BN_free(tmp1);
+		BN_free(tmp2);
+		BN_free(B);
+		
+		return ret;
 	}
 	
 	// S = (A *(v^u)) ^ b
 	template<class HashFunctionPolicy>
 	bytes OsslMathImpl<HashFunctionPolicy>::calculateSserver
-	(bytes A, bytes verificator, bytes u, bytes b)
+	(bytes AA, bytes verificator, bytes uu, bytes bb)
 	{
 		
 	}
 	
 	template<class HashFunctionPolicy> 
 	bytes OsslMathImpl<HashFunctionPolicy>::calculateSclient
-	(bytes B, bytes x, bytes a, bytes u)
+	(bytes BB, bytes xx, bytes aa, bytes uu)
 	{
 		
 	}
