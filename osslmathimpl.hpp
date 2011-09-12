@@ -22,6 +22,7 @@ namespace Dsrp
 			bytes calculateA(bytes aa); // a must be random
 			bool AisOK(bytes AA);
 			bytes calculateB(bytes verificator, bytes bb); // b must be random
+			bytes calculateU(bytes AA, bytes BB);
 			bytes calculateSserver(bytes AA, bytes verificator, bytes uu, bytes bb);
 			bytes calculateSclient(bytes BB, bytes xx, bytes aa, bytes uu);
 			bytes generateRandom(unsigned int bits);

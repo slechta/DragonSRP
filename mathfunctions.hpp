@@ -7,6 +7,13 @@
 
 namespace Dsrp
 {
+	
+	/* This is an iterface to class which just
+	 * performs mathematical operations
+	 * it doesnt check any constraints.
+	 * Checking constraints is done in
+	 * SrpServer and SrpClient classes
+	 */  
 	template<class HashFunctionPolicy>
 	class MathFunctions
 	{
@@ -15,6 +22,7 @@ namespace Dsrp
 			virtual bytes calculateA(bytes aa)=0; // a must be random
 			virtual bool AisOK(bytes AA)=0; // returns !(A mod N == 0)
 			virtual bytes calculateB(bytes verificator, bytes bb)=0; // b must be random
+			virtual bytes calculateU(bytes AA, bytes BB);
 			virtual bytes calculateSserver(bytes AA, bytes verificator, bytes uu, bytes bb)=0;
 			virtual bytes calculateSclient(bytes BB, bytes xx, bytes aa, bytes uu)=0;
 			virtual bytes generateRandom(unsigned int bits)=0; // Maybe other class

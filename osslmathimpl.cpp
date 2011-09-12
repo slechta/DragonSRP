@@ -34,6 +34,7 @@ namespace Dsrp
 		bytes2bignum(ng.getk(), k);
 	}
 	
+	// A = g^a mod N
 	template<class HashFunctionPolicy>
 	bytes OsslMathImpl<HashFunctionPolicy>::calculateA
 	(bytes aa)
@@ -42,7 +43,7 @@ namespace Dsrp
 		BIGNUM *A = BN_new();
 		
 		bytes2bignum(aa, a);
-		BN_mod_exp(A, g, a, N, ctx); // A = g^a mod N
+		BN_mod_exp(A, g, a, N, ctx);
 		
 		bytes ret;
 		bignum2bytes(A, ret);
@@ -53,7 +54,7 @@ namespace Dsrp
 		return ret;
 	}
 	
-	// constraint safety check
+	// constraint safety check implementation !(A%N==0)
 	template<class HashFunctionPolicy>
 	bool OsslMathImpl<HashFunctionPolicy>::AisOK(bytes AA)
 	{
@@ -104,12 +105,52 @@ namespace Dsrp
 		return ret;
 	}
 	
+	
+	// u = HASH(A || B); where || is string concatenation
+	template<class HashFunctionPolicy>
+	bytes OsslMathImpl<HashFunctionPolicy>::calculateU
+	(bytes AA, bytes BB)
+	{
+		HashFunctionPolicy hf;
+		bytes aandb = AA;
+		aandb.insert(aandb.end(), BB.begin(), BB.end());
+		return hf.hash(aandb);
+	}
+	
 	// S = (A *(v^u)) ^ b
 	template<class HashFunctionPolicy>
 	bytes OsslMathImpl<HashFunctionPolicy>::calculateSserver
 	(bytes AA, bytes verificator, bytes uu, bytes bb)
 	{
+		BIGNUM *A = BN_new();
+		BIGNUM *v = BN_new();
+		BIGNUM *u = BN_new();
+		BIGNUM *b = BN_new();
+		BIGNUM *tmp1 = BN_new();
+		BIGNUM *tmp2 = BN_new();
+		BIGNUM *S = BN_new();
 		
+		bytes2bignum(AA, A);
+		bytes2bignum(verificator, v);
+		bytes2bignum(uu, u);
+		bytes2bignum(bb, b);
+		
+		BN_mod_exp(tmp1, v, u, N, ctx);
+        BN_mod_mul(tmp2, A, tmp1, N, ctx);
+        BN_mod_exp(S, tmp2, b, N, ctx);
+		
+		bytes result;
+		bignum2bytes(S, result);
+		
+		BN_free(A);
+		BN_free(v);
+		BN_free(u);
+		BN_free(b);
+		BN_free(tmp1);
+		BN_free(tmp2);
+		BN_free(S);
+		
+		return result;
 	}
 	
 	template<class HashFunctionPolicy> 
