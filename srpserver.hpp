@@ -15,7 +15,7 @@ namespace Dsrp
 	{	
 		public:
 			int setUsername(bytes username); // C
-			int setA(bytes A); // A
+			int setA(bytes AA); // A
 			
 		private:
 			User usr;
@@ -28,8 +28,6 @@ namespace Dsrp
 			MathFunctionsPolicy mf;
 			Ng<HashFunctionPolicy> ng;
 	};
-	
-	
 }
 
 

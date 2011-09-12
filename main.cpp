@@ -12,7 +12,7 @@
 
 int main(int argc, char **argv)
 {
-	
+	printf("baf\n");
 	
 	return 0;
 }

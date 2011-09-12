@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -Wall -ggdb
 LIBS = -lssl
 BIN = dsrp
-OBJ = main.o srpclient.o srpserver.o
+OBJ = main.o srpclient.o srpserver.o user.o
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@

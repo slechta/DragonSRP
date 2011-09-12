@@ -10,6 +10,7 @@ namespace Dsrp
 	{
 		public:
 			User(bytes username, bytes verificator, bytes salt);
+			User(User& copy);
 			bytes getUsername();
 			bytes getVerificator();
 			bytes getSalt();
