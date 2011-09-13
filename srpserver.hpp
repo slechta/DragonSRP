@@ -3,30 +3,34 @@
 #define DSRP_SRPSERVER_HPP
 
 #include "common.hpp"
-#include "ng.hpp"
-#include "userlookup.hpp"
-#include "mathfunctions.hpp"
 #include "user.hpp"
+#include "userlookup.hpp"
+#include "hashfunction.hpp"
+#include "mathfunctions.hpp"
+#include "ng.hpp"
+
+template <class HashFunctionPolicy> class HashFunction;
+template <class MathFunctionsPolicy> class MathFunctions;
 
 namespace Dsrp
 {
-	template<class UserLookupPolicy, class HashFunctionPolicy, class MathFunctionsPolicy>
+	template<class HashFunctionPolicy, class MathFunctionsPolicy>
 	class SrpServer
 	{	
 		public:
-			int setUsername(bytes username); // C
-			int setA(bytes AA); // A
+			// int setUsername(bytes username); // C
+			// int setA(bytes AA); // A
 			
 		private:
-			User usr;
+			//User usr;
 			bytes A;
 			bytes b;
 			bytes B;
 			
-			UserLookupPolicy ul;
-			HashFunctionPolicy hf;
-			MathFunctionsPolicy mf;
-			Ng<HashFunctionPolicy> ng;
+			// UserLookup<UserLookupPolicy> ul;
+			HashFunction<HashFunctionPolicy> hf();
+			MathFunctions<MathFunctionsPolicy, HashFunctionPolicy> mf();
+			Ng ng();
 	};
 }
 

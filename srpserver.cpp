@@ -7,8 +7,10 @@
 
 namespace Dsrp
 {
-	template<class UserLookupPolicy, class HashFunctionPolicy, class MathFunctionsPolicy> 
-	int SrpServer<UserLookupPolicy, HashFunctionPolicy, MathFunctionsPolicy>::setUsername
+	
+	/*
+	template<class HashFunctionPolicy, class MathFunctionsPolicy> 
+	int SrpServer<HashFunctionPolicy, MathFunctionsPolicy>::setUsername
 	(bytes username)
 	{
 		//check status of authentification
@@ -16,14 +18,14 @@ namespace Dsrp
 		return 0;
 	}
 	
-	template<class UserLookupPolicy, class HashFunctionPolicy, class MathFunctionsPolicy>
-	int SrpServer<UserLookupPolicy, HashFunctionPolicy, MathFunctionsPolicy>::setA
+	template<class HashFunctionPolicy, class MathFunctionsPolicy>
+	int SrpServer<HashFunctionPolicy, MathFunctionsPolicy>::setA
 	(bytes AA)
 	{
 		//check status of authentification
 		A = AA;
 		return 0;
 	}
-	
+	*/
 }
 

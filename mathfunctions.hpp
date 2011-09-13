@@ -14,7 +14,7 @@ namespace Dsrp
 	 * Checking constraints is done in
 	 * SrpServer and SrpClient classes
 	 */  
-	template<class MathFunctionsPolicy>
+	template<class MathFunctionsPolicy, class HashFucntionPolicy>
 	class MathFunctions: public MathFunctionsPolicy
 	{
 		public:
