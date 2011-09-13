@@ -8,7 +8,8 @@
 namespace Dsrp
 {
 	// Just an interface
-	class HashFucntion
+	template<class HashFunctionPolicy>
+	class HashFucntion : public HashFunctionPolicy
 	{
 		public:
 			virtual bytes hash(const bytes &in)=0;

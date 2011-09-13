@@ -7,20 +7,16 @@
 
 namespace Dsrp
 {
-	template<class HashFunctionPolicy>
-	class Ng: public HashFunctionPolicy
+	class Ng
 	{
 		public:
 			Ng(bytes NN, bytes gg);
 			Ng(Ng& copy);
 			bytes getN();
 			bytes getg();
-			bytes getk();
-			static Ng predefined(unsigned int bits);
 			// checkNg();
 		private:
-			void calculateMultiplier();
-			bytes N, g, k;
+			bytes N, g;
 	};
 }
 

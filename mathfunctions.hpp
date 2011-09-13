@@ -18,7 +18,7 @@ namespace Dsrp
 	class MathFunctions
 	{
 		public:
-			virtual bytes setNg(Ng<HashFunctionPolicy> ng)=0; // needs to be called first
+			virtual bytes setNg(Ng ng)=0; // needs to be called first
 			
 			// virtual bytes calculateA(const bytes &aa)=0; // a must be random
 			
