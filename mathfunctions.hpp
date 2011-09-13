@@ -14,23 +14,14 @@ namespace Dsrp
 	 * Checking constraints is done in
 	 * SrpServer and SrpClient classes
 	 */  
-	template<class HashFunctionPolicy>
-	class MathFunctions
+	template<class MathFunctionsPolicy>
+	class MathFunctions: public MathFunctionsPolicy
 	{
 		public:
-			virtual bytes setNg(Ng ng)=0; // needs to be called first
-			
-			// virtual bytes calculateA(const bytes &aa)=0; // a must be random
-			
-			virtual bool AisOK(bytes AA)=0; // returns !(A mod N == 0)
-			
-			virtual bytes calculateB(bytes verificator, bytes bb)=0; // b must be random
-			virtual bytes calculateU(bytes AA, bytes BB);
-			virtual bytes calculateSserver(bytes AA, bytes verificator, bytes uu, bytes bb)=0;
-			
-			virtual int clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &S_out, bytes &M1_out)=0;
-			
-			virtual bytes generateRandom(unsigned int bits)=0; // Maybe other class
+			virtual bytes setNg(Ng ng)=0;
+			virtual int calculateA(const bytes &aa, bytes &A_out)=0;
+			virtual int clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &K_out, bytes &M1_out)=0;	
+			virtual int serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &M1_out, bytes &M2_out, bytes &K_out)=0;
 			
 		protected:	
 		

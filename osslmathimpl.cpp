@@ -25,190 +25,47 @@ namespace Dsrp
 	
 	template<class HashFunctionPolicy> 
 	bytes OsslMathImpl<HashFunctionPolicy>::setNg
-	(Ng<HashFunctionPolicy> ng)
+	(Ng ng)
 	{
 		// checkNg()????
 		// set that we set Ng as bool
-		bytes2bignum(ng.getN(), N);
-		bytes2bignum(ng.getg(), g);
-		bytes2bignum(ng.getk(), k);
+		
+		bytes NN = ng.getN();
+		bytes gg = ng.getg();
+		
+		bytes2bignum(NN, N);
+		bytes2bignum(gg, g);
+		
+		HashFunctionPolicy hf;
+		bytes both = NN;
+		both.insert(both.end(), gg.begin(), gg.end());
+		bytes kk = hf.hash(both);
+		bytes2bignum(kk, k);
 	}
 	
+	// necessary
 	// A = g^a mod N
 	template<class HashFunctionPolicy>
-	bytes OsslMathImpl<HashFunctionPolicy>::calculateA
-	(const bytes &aa)
+	int OsslMathImpl<HashFunctionPolicy>::calculateA
+	(const bytes &aa, bytes &A_out)
 	{
+		int ret = -1; // Default fail
 		BIGNUM *a = BN_new();
 		BIGNUM *A = BN_new();
+		BIGNUM *tmp1 = BN_new();
 		
 		bytes2bignum(aa, a);
 		BN_mod_exp(A, g, a, N, ctx);
 		
-		bytes ret;
-		bignum2bytes(A, ret);
+		bignum2bytes(A, A_out);
+		
+		
 		
 		BN_free(a);
 		BN_free(A);
+		BN_free(tmp1);
 		
 		return ret;
-	}
-	
-	// constraint safety check implementation !(A%N==0)
-	template<class HashFunctionPolicy>
-	bool OsslMathImpl<HashFunctionPolicy>::AisOK(bytes AA)
-	{
-		/* SRP-6a safety check */
-		BIGNUM *A = BN_new();
-		BIGNUM *tmp1 = BN_new();
-		
-		bytes2bignum(AA, A);
-		
-		BN_mod(tmp1, A, N, ctx);
-		bool ret = !BN_is_zero(tmp1);
-		BN_free(A);
-		BN_free(tmp1);
-		return ret;
-	}
-	
-	// B = k*v + g^b
-	template<class HashFunctionPolicy>
-	bytes OsslMathImpl<HashFunctionPolicy>::calculateB
-	(bytes verificator, bytes bb)
-	{
-		BIGNUM *b = BN_new();
-		BIGNUM *B = BN_new();
-		BIGNUM *v = BN_new();
-		BIGNUM *tmp1 = BN_new();
-		BIGNUM *tmp2 = BN_new();
-
-		bytes2bignum(bb, b);
-		bytes2bignum(verificator, v);
-		
-		// there is neccessary to add the SRP6a security check
-		// /* SRP-6a safety check */
-        //  BN_mod(tmp1, A, ng->N, ctx);
-		
-		BN_mod_mul(tmp1, k, v, N, ctx); // tmp1 = k * v
-        BN_mod_exp(tmp2, g, b, N, ctx); // tmp2 = (g ^ b) % N
-        BN_mod_add(B, tmp1, tmp2, N, ctx); // B = k * v + (g ^ b) % N
-		
-		bytes ret;
-		bignum2bytes(B, ret);
-		
-		BN_free(b);
-		BN_free(v);
-		BN_free(tmp1);
-		BN_free(tmp2);
-		BN_free(B);
-		
-		return ret;
-	}
-	
-	
-	// u = HASH(A || B); where || is string concatenation
-	template<class HashFunctionPolicy>
-	bytes OsslMathImpl<HashFunctionPolicy>::calculateU
-	(bytes &AA, bytes &BB)
-	{
-		HashFunctionPolicy hf;
-		bytes aandb = AA;
-		aandb.insert(aandb.end(), BB.begin(), BB.end());
-		return hf.hash(aandb);
-	}
-	
-	// S = (A *(v^u)) ^ b
-	template<class HashFunctionPolicy>
-	bytes OsslMathImpl<HashFunctionPolicy>::calculateSserver
-	(bytes AA, bytes verificator, bytes uu, bytes bb)
-	{
-		BIGNUM *A = BN_new();
-		BIGNUM *v = BN_new();
-		BIGNUM *u = BN_new();
-		BIGNUM *b = BN_new();
-		BIGNUM *tmp1 = BN_new();
-		BIGNUM *tmp2 = BN_new();
-		BIGNUM *S = BN_new();
-		
-		bytes2bignum(AA, A);
-		bytes2bignum(verificator, v);
-		bytes2bignum(uu, u);
-		bytes2bignum(bb, b);
-		
-		BN_mod_exp(tmp1, v, u, N, ctx);
-        BN_mod_mul(tmp2, A, tmp1, N, ctx);
-        BN_mod_exp(S, tmp2, b, N, ctx);
-		
-		bytes result;
-		bignum2bytes(S, result);
-		
-		BN_free(A);
-		BN_free(v);
-		BN_free(u);
-		BN_free(b);
-		BN_free(tmp1);
-		BN_free(tmp2);
-		BN_free(S);
-		
-		return result;
-	}
-	
-	
-	// true - security check passed
-	// false - security check failed
-	// S = (B - k*(g^x)) ^ (a + ux)
-	template<class HashFunctionPolicy> 
-	bool OsslMathImpl<HashFunctionPolicy>::calculateSclient
-	(const bytes &BB, const bytes &xx, const bytes &aa, const bytes &uu, bytes &Sout)
-	{
-		// Safety SRP6a check necessary !!!!!!!!!!
-		bool rval = true; // default fail
-		
-		BIGNUM *B = BN_new();
-		BIGNUM *x = BN_new();
-		BIGNUM *a = BN_new();
-		BIGNUM *u = BN_new();
-		BIGNUM *tmp1 = BN_new();
-		BIGNUM *tmp2 = BN_new();
-		BIGNUM *tmp3 = BN_new();
-		BIGNUM *S = BN_new();
-		
-		bytes2bignum(BB, B);
-		bytes2bignum(uu, u);
-		
-		// SRP-6a safety check
-		if (!BN_is_zero(B) && !BN_is_zero(u))
-		{
-			bytes2bignum(xx, x);
-			bytes2bignum(aa, a);
-			BN_mod_mul(tmp1, u, x, N, ctx);		/* tmp1 = ux */
-			BN_mod_add(tmp2, a, tmp1, N, ctx);             /* tmp2 = a+ux  */
-			BN_mod_exp(tmp1, g, x, N, ctx); /* tmp1 = (g^x)%N */
-			BN_mod_mul(tmp3, k, tmp1, N, ctx);             /* tmp3 = k*((g^x)%N)       */
-			BN_sub(tmp1, B, tmp3);                  /* tmp1 = (B-k*((g^x)%N) */
-			BN_mod_exp(S, tmp1, tmp2, N, ctx); /* S = ((B-k*((g^x)%N)^(a+ux)%N) */
-			
-			bignum2bytes(S, Sout);
-			rval = false;
-		}
-		
-		BN_free(B);
-		BN_free(x);
-		BN_free(a);
-		BN_free(u);
-		BN_free(tmp1);
-		BN_free(tmp2);
-		BN_free(tmp3);
-		BN_free(S);
-		
-		return rval;
-	}
-	
-	template<class HashFunctionPolicy>
-	bytes OsslMathImpl<HashFunctionPolicy>::generateRandom
-	(unsigned int bits)
-	{
-		
 	}
 	
 	// u = H(A || B)
@@ -217,10 +74,10 @@ namespace Dsrp
 	// K = H(S)
 	template<class HashFunctionPolicy>
 	int OsslMathImpl<HashFunctionPolicy>::clientChallenge
-	(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &S_out, bytes &M1_out)
+	(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &K_out, bytes &M1_out)
 	{
 		// Safety SRP6a check necessary !!!!!!!!!!
-		bool rval = true; // default fail
+		bool rval = -1; // default fail
 		
 		BIGNUM *B = BN_new();
 		BIGNUM *x = BN_new();
@@ -262,19 +119,14 @@ namespace Dsrp
 			BN_sub(tmp1, B, tmp3);             /* tmp1 = (B-k*((g^x)%N) */
 			BN_mod_exp(S, tmp1, tmp2, N, ctx); /* S = ((B-k*((g^x)%N)^(a+ux)%N) */
 			
-			bignum2bytes(S, S_out);
-			rval = false;
-		}
-		
-		if (!rval)
-		{
 			// Calculate K
-			bytes KK = hf.hash(S);
+			K_out = hf.hash(S);
 		
 			// Calculate M1
-			M1_out = calculateM1(username, salt, AA, BB, KK);
+			M1_out = calculateM1(username, salt, AA, BB, K_out);
+			
+			rval = 0;
 		}
-		
 		
 		BN_free(B);
 		BN_free(x);
@@ -323,7 +175,7 @@ namespace Dsrp
 	
 	template<class HashFunctionPolicy>
 	int OsslMathImpl<HashFunctionPolicy>::serverChallange
-	(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, const bytes &BB, bytes &M1_out, bytes &M2_out, bytes &K_out)
+	(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &M1_out, bytes &M2_out, bytes &K_out)
 	{
 		int rval = -1; // default fail
 		
@@ -352,28 +204,31 @@ namespace Dsrp
         if (!BN_is_zero(tmp1) && !BN_is_zero(v))
         {
 		
-			BN_mod_mul(tmp1, k, v, N, ctx); // tmp1 = k * v
-			BN_mod_exp(tmp2, g, b, N, ctx); // tmp2 = g ^ b
-			BN_mod_add(B, tmp1, tmp2, N, ctx); // B = k * v + g ^ b
+		    // Calculate B = k*v + g^b
+			BN_mod_mul(tmp1, k, v, N, ctx);
+			BN_mod_exp(tmp2, g, b, N, ctx);
+			BN_mod_add(B, tmp1, tmp2, N, ctx);
 		
-			// Calculate u
-			
+			// Calculate u = H(A || B)
 			bytes AABB = AA;
+			bytes BB;
+			bignum2bytes(B, BB);
+			
 			AABB.insert(AABB.end(), BB.begin(), BB.end());
 			bytes uu = hf.hash(AABB);
 			bytes2bignum(uu, u);
 		
-			// S = Calculate (A *(v^u)) ^ b
+			// Calculate S = (A *(v^u)) ^ b
 			BN_mod_exp(tmp1, v, u, N, ctx);
 			BN_mod_mul(tmp2, A, tmp1, N, ctx);
 			BN_mod_exp(S, tmp2, b, N, ctx);
 			bignum2bytes(S, SS);
 			K_out = hf.hash(SS);
 			
-			// Calculate M1
+			// Calculate M1 = H(H(N) XOR H(g) || H (s || A || B || K))
 			M1_out = calculateM1(username, salt, AA, BB, K_out);
 			
-			// Calculate M2 = H(A | M | K)
+			// Calculate M2 = H(A || M || K)
 			bytes toHashM2 = AA;
 			toHashM2.insert(toHashM2.end(), M1_out.begin(), M1_out.end());
 			toHashM2.insert(toHashM2.end(), K_out.begin(), K_out.end());
@@ -395,5 +250,4 @@ namespace Dsrp
 		
 		return rval;
 	}
-	
 }

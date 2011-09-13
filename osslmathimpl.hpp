@@ -18,24 +18,15 @@ namespace Dsrp
 		protected:
 			OsslMathImpl();
 			~OsslMathImpl();
-			bytes setNg(Ng<HashFunctionPolicy> ng); // Must be called first
-			bytes calculateA(const bytes &aa); // a must be random
-			bool AisOK(bytes AA);
-			bytes calculateB(bytes verificator, bytes bb); // b must be random
-			bytes calculateU(bytes &AA, bytes &BB);
-			bytes calculateSserver(bytes AA, bytes verificator, bytes uu, bytes bb);
-			bool calculateSclient(const bytes &BB, const bytes &xx, const bytes &aa, const bytes &uu, bytes &Sout);
-			bytes generateRandom(unsigned int bits);
 			
-			
-			int clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &S_out, bytes &M1_out);
-			bytes calculateM1(const bytes &username, const bytes &s, const bytes &A, const bytes &B, const bytes &K);
-			
-			
-	
-			int serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, const bytes &BB, bytes &M1_out, bytes &M2_out, bytes &K_out);
+			bytes setNg(Ng ng);
+			int calculateA(const bytes &aa, bytes &A_out);
+			int clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &K_out, bytes &M1_out);	
+			int serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &M1_out, bytes &M2_out, bytes &K_out);
 			
 		private:
+			bytes calculateM1(const bytes &username, const bytes &s, const bytes &A, const bytes &B, const bytes &K);
+			
 			BIGNUM *N;
 			BIGNUM *g;
 			BIGNUM *k;
