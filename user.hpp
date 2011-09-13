@@ -10,11 +10,20 @@ namespace Dsrp
 	{
 		public:
 			User(bytes username, bytes verificator, bytes salt);
-			User(User& copy);
+			~User();
+			
+			User();
+			User(const User &copy); // Copy constructor
+			User & operator=(const User &rhs); // Assignment operator
+
+			bool operator() (User &a, User &b); // less <T>
+			bool operator< (const User &b); // Copmarator
+			
+			
+			
 			bytes getUsername();
 			bytes getVerificator();
 			bytes getSalt();
-		
 		private:
 			bytes username, verificator, salt;
 	};

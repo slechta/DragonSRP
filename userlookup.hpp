@@ -7,9 +7,10 @@
 
 namespace Dsrp
 {
-	class UserLookup
+	template<class UserLookupPolicy>
+	class UserLookup : public UserLookupPolicy
 	{
-		virtual User getByName(bytes username)=0;
+		virtual int getByName(bytes username, bytes &userOut)=0; // returns 0 on success
 	};
 	
 }

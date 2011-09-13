@@ -20,6 +20,7 @@ namespace Dsrp
 		public:
 			// int setUsername(bytes username); // C
 			// int setA(bytes AA); // A
+			// UserLookup<UserLookupPolicy> getLookup();
 			
 		private:
 			//User usr;
@@ -28,7 +29,7 @@ namespace Dsrp
 			bytes B;
 			
 			// UserLookup<UserLookupPolicy> ul;
-			HashFunction<HashFunctionPolicy> hf();
+			// HashFunction<HashFunctionPolicy> hf();
 			MathFunctions<MathFunctionsPolicy, HashFunctionPolicy> mf();
 			Ng ng();
 	};
