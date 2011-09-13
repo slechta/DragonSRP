@@ -37,7 +37,7 @@ namespace Dsrp
 	// A = g^a mod N
 	template<class HashFunctionPolicy>
 	bytes OsslMathImpl<HashFunctionPolicy>::calculateA
-	(bytes aa)
+	(const bytes &aa)
 	{
 		BIGNUM *a = BN_new();
 		BIGNUM *A = BN_new();
@@ -109,7 +109,7 @@ namespace Dsrp
 	// u = HASH(A || B); where || is string concatenation
 	template<class HashFunctionPolicy>
 	bytes OsslMathImpl<HashFunctionPolicy>::calculateU
-	(bytes AA, bytes BB)
+	(bytes &AA, bytes &BB)
 	{
 		HashFunctionPolicy hf;
 		bytes aandb = AA;
@@ -266,11 +266,14 @@ namespace Dsrp
 			rval = false;
 		}
 		
-		// Calculate K
-		bytes KK = hf.hash(S);
+		if (!rval)
+		{
+			// Calculate K
+			bytes KK = hf.hash(S);
 		
-		// Calculate M1
-		M1_out = calculateM1(username, salt, AA, BB, KK);
+			// Calculate M1
+			M1_out = calculateM1(username, salt, AA, BB, KK);
+		}
 		
 		
 		BN_free(B);
@@ -292,8 +295,16 @@ namespace Dsrp
 	(const bytes &username, const bytes &s, const bytes &A, const bytes &B, const bytes &K)
 	{
 		HashFunctionPolicy hf;
-        bytes H_N = hf.hash(N);
-        bytes H_g = hf.hash(g);
+		
+		bytes NN;
+		bytes gg;
+		
+		bignum2bytes(N, NN);
+		bignum2bytes(g, gg);
+		
+        bytes H_N = hf.hash(NN); 
+        bytes H_g = hf.hash(gg);
+        
         bytes H_username = hf.hash(username);
         bytes H_xor;
 		
@@ -308,6 +319,81 @@ namespace Dsrp
 		toHash.insert(toHash.end(), K.begin(), K.end());
 		
 		return hf.hash(toHash);
+	}
+	
+	template<class HashFunctionPolicy>
+	int OsslMathImpl<HashFunctionPolicy>::serverChallange
+	(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, const bytes &BB, bytes &M1_out, bytes &M2_out, bytes &K_out)
+	{
+		int rval = -1; // default fail
+		
+		HashFunctionPolicy hf;
+		
+		bytes SS;
+		
+		BIGNUM *A = BN_new();
+		BIGNUM *b = BN_new();
+		BIGNUM *B = BN_new();
+		BIGNUM *v = BN_new();
+		BIGNUM *S = BN_new();
+		BIGNUM *u = BN_new();
+		BIGNUM *tmp1 = BN_new();
+		BIGNUM *tmp2 = BN_new();
+
+		bytes2bignum(bb, b);
+		bytes2bignum(verificator, v);
+		
+		// there is neccessary to add the SRP6a security check
+		// SRP-6a safety check
+		
+        BN_mod(tmp1, A, N, ctx);
+        
+        // i added the v != 0 check
+        if (!BN_is_zero(tmp1) && !BN_is_zero(v))
+        {
+		
+			BN_mod_mul(tmp1, k, v, N, ctx); // tmp1 = k * v
+			BN_mod_exp(tmp2, g, b, N, ctx); // tmp2 = g ^ b
+			BN_mod_add(B, tmp1, tmp2, N, ctx); // B = k * v + g ^ b
+		
+			// Calculate u
+			
+			bytes AABB = AA;
+			AABB.insert(AABB.end(), BB.begin(), BB.end());
+			bytes uu = hf.hash(AABB);
+			bytes2bignum(uu, u);
+		
+			// S = Calculate (A *(v^u)) ^ b
+			BN_mod_exp(tmp1, v, u, N, ctx);
+			BN_mod_mul(tmp2, A, tmp1, N, ctx);
+			BN_mod_exp(S, tmp2, b, N, ctx);
+			bignum2bytes(S, SS);
+			K_out = hf.hash(SS);
+			
+			// Calculate M1
+			M1_out = calculateM1(username, salt, AA, BB, K_out);
+			
+			// Calculate M2 = H(A | M | K)
+			bytes toHashM2 = AA;
+			toHashM2.insert(toHashM2.end(), M1_out.begin(), M1_out.end());
+			toHashM2.insert(toHashM2.end(), K_out.begin(), K_out.end());
+			M2_out = hf.hash(toHashM2);
+			
+			rval = 0;
+		}
+		
+		
+		BN_free(A);
+		BN_free(b);
+		BN_free(B);
+		BN_free(v);
+		BN_free(S);
+		BN_free(u);
+		BN_free(tmp1);
+		BN_free(tmp2);
+		
+		
+		return rval;
 	}
 	
 }

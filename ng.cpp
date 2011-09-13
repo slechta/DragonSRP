@@ -49,8 +49,9 @@ namespace Dsrp
 	template<class HashFunctionPolicy>
 	void Ng<HashFunctionPolicy>::calculateMultiplier()
 	{
+		HashFunctionPolicy hf;
 		bytes NNgg = N;
 		NNgg.insert(NNgg.end(), g.begin(), g.end());
-		k = hash(NNgg);
+		k = hf.hash(NNgg);
 	}
 }

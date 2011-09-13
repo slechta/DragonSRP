@@ -19,12 +19,17 @@ namespace Dsrp
 	{
 		public:
 			virtual bytes setNg(Ng<HashFunctionPolicy> ng)=0; // needs to be called first
-			virtual bytes calculateA(bytes aa)=0; // a must be random
+			
+			// virtual bytes calculateA(const bytes &aa)=0; // a must be random
+			
 			virtual bool AisOK(bytes AA)=0; // returns !(A mod N == 0)
+			
 			virtual bytes calculateB(bytes verificator, bytes bb)=0; // b must be random
 			virtual bytes calculateU(bytes AA, bytes BB);
 			virtual bytes calculateSserver(bytes AA, bytes verificator, bytes uu, bytes bb)=0;
-			virtual bool calculateSclient(const bytes &BB, const bytes &xx, const bytes &aa, const bytes &uu, bytes &Sout)=0;
+			
+			virtual int clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &S_out, bytes &M1_out)=0;
+			
 			virtual bytes generateRandom(unsigned int bits)=0; // Maybe other class
 			
 		protected:	

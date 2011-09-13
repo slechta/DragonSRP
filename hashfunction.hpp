@@ -11,7 +11,7 @@ namespace Dsrp
 	class HashFucntion
 	{
 		public:
-			virtual bytes hash(bytes)=0;
+			virtual bytes hash(const bytes &in)=0;
 			virtual unsigned int ouputLen()=0;
 		protected:
 		

@@ -7,7 +7,7 @@
 
 namespace Dsrp
 {
-	bytes OsslSha256::hash(bytes in)
+	bytes OsslSha256::hash(const bytes &in)
 	{
 		int len;
 		unsigned char *arr = bytes2array(in, &len);
