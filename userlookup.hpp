@@ -10,7 +10,7 @@ namespace Dsrp
 	template<class UserLookupPolicy>
 	class UserLookup : public UserLookupPolicy
 	{
-		virtual int getByName(bytes username, bytes &userOut)=0; // returns 0 on success
+		virtual bool getByName(bytes username, bytes &userOut)=0; // returns true on success
 	};
 	
 }

@@ -3,10 +3,12 @@
 
 namespace Dsrp 
 {	
+	/*
 	User::User()
 	{
 		
 	}
+	*/
 	
 	User::User(bytes usrname, bytes verif, bytes sal)
 	{
@@ -20,6 +22,7 @@ namespace Dsrp
 		
 	}
 
+	/*
 	User::User(const User& copy)
 	{
 		username = copy.username;
@@ -39,6 +42,7 @@ namespace Dsrp
 	{
 		return username < b.username;
 	}
+	*/
 
 	bool User::operator() (User &a, User &b)
 	{

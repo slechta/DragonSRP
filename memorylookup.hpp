@@ -11,8 +11,8 @@ namespace Dsrp
 	class MemoryLookup
 	{
 		public:
-			int getByName(bytes username, User &userOut); // returns 0 on success
-			int userAdd(User user);
+			bool getByName(bytes username, User &userOut); // returns true on success
+			bool userAdd(User user); // returns true on success
 			
 		private:
 			std::map<bytes, User> db;
