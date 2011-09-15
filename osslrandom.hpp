@@ -10,7 +10,7 @@ namespace Dsrp
 	{
 		protected:
 			OsslRandom();
-			bytes getRandom(unsigned int len);
+			bool getRandom(bytes &out, unsigned int len);
 		private:
 			FILE *fp;
 			int init_ret;
