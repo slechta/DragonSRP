@@ -4,19 +4,8 @@
 #include "common.hpp"
 #include "srpserver.hpp"
 
-
 namespace Dsrp
-{
-	/*
-	template<class UserLookupPolicy, class HashFunctionPolicy, class MathFunctionsPolicy, class RandomFunctionPolicy>
-	SrpServer::SrpServer
-	(UserLookup<UserLookupPolicy> &userLookup) :
-		ul(userLookup)
-	{
-		
-	}
-	*/
-	
+{	
 	/*
 	template<class HashFunctionPolicy, class MathFunctionsPolicy> 
 	int SrpServer<HashFunctionPolicy, MathFunctionsPolicy>::setUsername

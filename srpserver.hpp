@@ -22,8 +22,8 @@ namespace Dsrp
 	 * 
 	 * Well if only C++0x had concepts :(
 	 */
-	template<class LookupPolicy, class HashPolicy, class RandomPolicy>
-	class SrpServer : public LookupPolicy, HashPolicy, RandomPolicy
+	template<class LookupPolicy, class HashPolicy, class MathPolicy, class RandomPolicy>
+	class SrpServer : public LookupPolicy, MathPolicy, RandomPolicy
 	{	
 		public:
 			//SrpServer(UserLookup<UserLookupPolicy> &userLookup);
@@ -36,12 +36,7 @@ namespace Dsrp
 			bytes A;
 			bytes b;
 			bytes B;
-			
-			
-			// UserLookup<UserLookupPolicy> ul();
-			// MathFunctions<MathFunctionsPolicy, HashFunctionPolicy> mf();
-			
-			Ng ng();
+			//Ng ng;
 	};
 }
 
