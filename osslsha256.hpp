@@ -3,10 +3,11 @@
 #define OSSLSHA
 
 #include "common.hpp"
+#include "hashinterface.hpp"
 
 namespace Dsrp
 {
-	class OsslSha256 // zdedit asi fakt ne
+	class OsslSha256 : public HashInterface
 	{
 		protected:
 			bytes hash(const bytes &in);

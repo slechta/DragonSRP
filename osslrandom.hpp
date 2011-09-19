@@ -3,12 +3,13 @@
 #define DSRP_OSSLRANDOM_HPP
 
 #include "common.hpp"
+#include "randominterface.hpp"
 
 namespace Dsrp
 {
-	class OsslRandom
+	class OsslRandom : public RandomInterface
 	{
-		protected:
+		public:
 			OsslRandom();
 			bool getRandom(bytes &out, unsigned int len);
 		private:

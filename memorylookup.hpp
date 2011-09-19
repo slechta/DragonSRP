@@ -4,11 +4,12 @@
 
 #include <map>
 #include "common.hpp"
+#include "lookupinterface.hpp"
 #include "user.hpp"
 
 namespace Dsrp
 {
-	class MemoryLookup
+	class MemoryLookup : public LookupInterface
 	{
 		public:
 			bool getByName(bytes username, User &userOut); // returns true on success

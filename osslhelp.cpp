@@ -32,4 +32,10 @@ namespace Dsrp
 		*lenout = in.size();
 		return bytesIn;
 	}
+	
+	void string2bytes(const std::string &str, bytes &out)
+	{
+		const char *s = str.c_str();
+		copy(s, s + str.size(), out.begin());
+	}
 }

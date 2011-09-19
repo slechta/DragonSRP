@@ -7,15 +7,16 @@
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 
-
-#include "mathfunctions.hpp"
+#include "common.hpp"
+#include "mathinterface.hpp"
+#include "ng.hpp"
 
 namespace Dsrp
 {
-	template<class HashFunctionPolicy>
-	class OsslMathImpl // zdedit asi fakt ne
+	template<class HashPolicy>
+	class OsslMathImpl : public MathInterface
 	{
-		protected:
+		public:
 			OsslMathImpl();
 			~OsslMathImpl();
 			

@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <openssl/sha.h>
+
 #include "osslsha256.hpp"
 #include "osslhelp.hpp"
 

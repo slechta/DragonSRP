@@ -11,5 +11,5 @@ $(BIN): $(OBJ)
 	$(CC) $^ -o $@ $(LIBS)
 
 clean::
-	rm *.o
-	rm $(BIN)
+	rm -f *.o
+	rm -f $(BIN)

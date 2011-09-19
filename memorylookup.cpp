@@ -1,4 +1,6 @@
 
+
+#include <stdio.h>
 #include <iterator>
 #include "memorylookup.hpp"
 #include "user.hpp"
@@ -9,6 +11,7 @@ namespace Dsrp
 	
 	bool MemoryLookup::getByName(bytes username, User &userOut)
 	{
+		printf("ble ble ble \n");
 		std::map<bytes, User>::iterator iter;
 		iter = db.find(username);
 		if (iter == db.end()) return false;

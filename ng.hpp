@@ -3,7 +3,6 @@
 #define DSRP_NG_HPP
 
 #include "common.hpp"
-#include "hashfunction.hpp"
 
 namespace Dsrp
 {

@@ -4,8 +4,8 @@
 
 namespace Dsrp
 {
-	template<class HashFunctionPolicy> 
-	OsslMathImpl<HashFunctionPolicy>::OsslMathImpl() :
+	template<class HashPolicy> 
+	OsslMathImpl<HashPolicy>::OsslMathImpl() :
 		N(BN_new()),
 		g(BN_new()),
 		k(BN_new()),
@@ -13,9 +13,10 @@ namespace Dsrp
 	{
 		
 	}
-	
-	template<class HashFunctionPolicy>
-	OsslMathImpl<HashFunctionPolicy>::~OsslMathImpl()
+
+
+	template<class HashPolicy>
+	OsslMathImpl<HashPolicy>::~OsslMathImpl()
 	{
 		BN_free(N);
 		BN_free(g);
@@ -23,8 +24,8 @@ namespace Dsrp
 		BN_CTX_free(ctx);
 	}
 	
-	template<class HashFunctionPolicy> 
-	bytes OsslMathImpl<HashFunctionPolicy>::setNg
+	template<class HashPolicy> 
+	bytes OsslMathImpl<HashPolicy>::setNg
 	(Ng ng)
 	{
 		// checkNg()????
@@ -36,7 +37,7 @@ namespace Dsrp
 		bytes2bignum(NN, N);
 		bytes2bignum(gg, g);
 		
-		HashFunctionPolicy hf;
+		HashPolicy hf;
 		bytes both = NN;
 		both.insert(both.end(), gg.begin(), gg.end());
 		bytes kk = hf.hash(both);
@@ -45,8 +46,8 @@ namespace Dsrp
 	
 	// necessary
 	// A = g^a mod N
-	template<class HashFunctionPolicy>
-	int OsslMathImpl<HashFunctionPolicy>::calculateA
+	template<class HashPolicy>
+	int OsslMathImpl<HashPolicy>::calculateA
 	(const bytes &aa, bytes &A_out)
 	{
 		int ret = -1; // Default fail
@@ -72,8 +73,8 @@ namespace Dsrp
 	// x = H(salt || H(username || ":" || password)
 	// S = (B - k*(g^x)) ^ (a + ux)
 	// K = H(S)
-	template<class HashFunctionPolicy>
-	int OsslMathImpl<HashFunctionPolicy>::clientChallenge
+	template<class HashPolicy>
+	int OsslMathImpl<HashPolicy>::clientChallenge
 	(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &K_out, bytes &M1_out)
 	{
 		// Safety SRP6a check necessary !!!!!!!!!!
@@ -89,7 +90,7 @@ namespace Dsrp
 		BIGNUM *S = BN_new();
 		
 		// Calculate u = H(A || B)
-		HashFunctionPolicy hf;
+		HashPolicy hf;
 		bytes AandB = AA;
 		AandB.insert(AandB.end(), BB.begin(), BB.end());
 		bytes uu = hf.hash(AandB);
@@ -142,11 +143,11 @@ namespace Dsrp
 	
 	
 	// M = H(H(N) XOR H(g) | H(username) | s | A | B | K)
-	template<class HashFunctionPolicy>
-	bytes OsslMathImpl<HashFunctionPolicy>::calculateM1
+	template<class HashPolicy>
+	bytes OsslMathImpl<HashPolicy>::calculateM1
 	(const bytes &username, const bytes &s, const bytes &A, const bytes &B, const bytes &K)
 	{
-		HashFunctionPolicy hf;
+		HashPolicy hf;
 		
 		bytes NN;
 		bytes gg;
@@ -173,13 +174,13 @@ namespace Dsrp
 		return hf.hash(toHash);
 	}
 	
-	template<class HashFunctionPolicy>
-	int OsslMathImpl<HashFunctionPolicy>::serverChallange
+	template<class HashPolicy>
+	int OsslMathImpl<HashPolicy>::serverChallange
 	(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &M1_out, bytes &M2_out, bytes &K_out)
 	{
 		int rval = -1; // default fail
 		
-		HashFunctionPolicy hf;
+		HashPolicy hf;
 		
 		bytes SS;
 		

@@ -1,13 +1,12 @@
 
-#ifndef DSRP_RANDOMFUNC_HPP
-#define DSRP_RANDOMFUNC_HPP
+#ifndef DSRP_RANDOMINTERFACE_HPP
+#define DSRP_RANDOMINTERFACE_HPP
 
 #include "common.hpp"
 
 namespace Dsrp
 {
-	template<class RandomFunctionPolicy>
-	class RandomFunction: public RandomFunctionPolicy
+	class RandomInterface
 	{
 		public:
 			// returns true on success
