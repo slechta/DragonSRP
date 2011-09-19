@@ -26,17 +26,33 @@ namespace Dsrp
 	class SrpServer : public LookupPolicy, MathPolicy, RandomPolicy
 	{	
 		public:
-			//SrpServer(UserLookup<UserLookupPolicy> &userLookup);
-			// int setUsername(bytes username); // C
-			// int setA(bytes AA); // A
-			// UserLookup<UserLookupPolicy> getLookup();
+			SrpServer(Ng ngVal) :
+				ng(ngVal)
+			{
+				
+			}			
+			
+			int setUsername(bytes username) // C
+			{
+				// check status of authentification
+				// usr = ul.getByName(username);
+				return 0;
+			}
+						
+			int setA(bytes AA) // A
+			{
+				// check status of authentification
+				A = AA;
+				return 0;
+			}
+
 			
 		private:
 			//User usr;
 			bytes A;
 			bytes b;
 			bytes B;
-			//Ng ng;
+			Ng ng;
 	};
 }
 

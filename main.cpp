@@ -13,6 +13,7 @@
 #include "osslrandom.hpp"
 #include "osslhelp.hpp"
 #include "memorylookup.hpp"
+#include "ng.hpp"
 
 using namespace Dsrp;
 using namespace std;
@@ -27,7 +28,9 @@ int main(int argc, char **argv)
 	OsslRandom rand;
 	*/
 	
-	SrpServer<MemoryLookup, OsslSha256, OsslMathImpl<OsslSha256>, OsslRandom > srpserver;
+	Ng ng = Ng::predefined(4096);
+	
+	SrpServer<MemoryLookup, OsslSha256, OsslMathImpl<OsslSha256>, OsslRandom > srpserver(ng);
 		
 	printf("baf\n");
 	 

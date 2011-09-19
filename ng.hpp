@@ -10,9 +10,10 @@ namespace Dsrp
 	{
 		public:
 			Ng(bytes NN, bytes gg);
-			Ng(Ng& copy);
+			// Ng(const Ng& copy); // Copy constructor for STL Vector
 			bytes getN();
 			bytes getg();
+			static Ng predefined(unsigned int bitlen);
 			// checkNg();
 		private:
 			bytes N, g;
