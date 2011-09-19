@@ -9,10 +9,9 @@ namespace Dsrp
 {
 	class OsslSha256 : public HashInterface
 	{
-		protected:
+		public:
 			bytes hash(const bytes &in);
-			unsigned int ouputLen();
-		private:
+			unsigned int outputLen();
 	};
 }
 

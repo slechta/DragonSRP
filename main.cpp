@@ -14,6 +14,8 @@
 #include "osslhelp.hpp"
 #include "memorylookup.hpp"
 
+#include "osslmathimpl.cpp"
+
 
 using namespace Dsrp;
 using namespace std;

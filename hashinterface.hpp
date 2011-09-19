@@ -11,7 +11,7 @@ namespace Dsrp
 	{
 		public:
 			virtual bytes hash(const bytes &in)=0;
-			virtual unsigned int ouputLen()=0;
+			virtual unsigned int outputLen()=0;
 	};
 }
 

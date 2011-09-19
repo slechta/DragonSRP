@@ -1,6 +1,7 @@
 
 #include "osslmathimpl.hpp"
 #include "osslhelp.hpp"
+#include "ng.hpp"
 
 namespace Dsrp
 {
@@ -98,10 +99,10 @@ namespace Dsrp
 		bytes2bignum(BB, B);
 		
 		// Calculate x = HASH(salt || HASH(username || ":" || password)
-		unsigned char *colon = ':';
+		unsigned char colon = ':';
 		bytes sup = salt;
 		sup.insert(sup.end(), username.begin(), username.end());
-		sup.insert(sup.end(), colon, colon + 1);
+		sup.insert(sup.end(), &colon, (&colon) + 1);
 		sup.insert(sup.end(), password.begin(), password.end());
 		bytes hashTmp = hf.hash(sup);
 		hashTmp.insert(sup.begin(), salt.begin(), salt.end());
@@ -121,7 +122,9 @@ namespace Dsrp
 			BN_mod_exp(S, tmp1, tmp2, N, ctx); /* S = ((B-k*((g^x)%N)^(a+ux)%N) */
 			
 			// Calculate K
-			K_out = hf.hash(S);
+			bytes SS;
+			bignum2bytes(S, SS);
+			K_out = hf.hash(SS);
 		
 			// Calculate M1
 			M1_out = calculateM1(username, salt, AA, BB, K_out);
