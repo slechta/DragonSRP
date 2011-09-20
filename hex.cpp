@@ -93,3 +93,9 @@ void print_int(unsigned char *array, int len)
   int i;
   for (i = 0; i < len; i++) printf("%d ", array[i]);
 }
+
+void print_hex(unsigned char *array, int len)
+{
+  int i;
+  for (i = 0; i < len; i++) printf("%.2X", array[i]);
+}

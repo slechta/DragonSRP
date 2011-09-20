@@ -12,6 +12,8 @@ namespace Dsrp
 	void bignum2bytes(BIGNUM *in, bytes& out);
 	unsigned char *bytes2array(const bytes &in, int *lenout); // return value must be deallocated with free!
 	void string2bytes(const std::string &str, bytes &out);
+	bytes string2bytes(const std::string &str);
+	bytes string2bytes(const char *str);
 }
 
 #endif

@@ -5,6 +5,7 @@
 #include <string>
 
 #include "srpserver.hpp"
+#include "srpverificator.hpp"
 #include "srpclient.hpp"
 #include "user.hpp"
 
@@ -20,15 +21,27 @@ using namespace std;
 
 int main(int argc, char **argv)
 {	
+	printf("baf1\n");
 	Ng ng = Ng::predefined(4096);
+	
+	/*
+	printf("baf2\n");
 	OsslSha256 hash;
+	printf("baf2B\n");
 	OsslMathImpl math(hash, ng);
+	printf("baf2C\n");
 	OsslRandom random;
+	printf("baf2D\n");
 	MemoryLookup lookup;
 	
+	printf("baf3\n");
 	SrpServer srpserver(lookup, math, random);
-		
-	printf("baf\n");
+	
+	printf("baf4\n");
+	SrpVerificator ver = srpserver.getVerificator(string2bytes("testuser"), string2bytes("libovolne, nutno dodelat hex"));
+	
+	*/
+	printf("baf5\n");
 	 
 	return 0;
 }
