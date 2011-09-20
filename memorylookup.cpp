@@ -4,19 +4,19 @@
 #include <iterator>
 #include "memorylookup.hpp"
 #include "user.hpp"
+#include "dsrpexception.hpp"
 
 namespace Dsrp
 {
 	class User;
 	
-	bool MemoryLookup::getByName(bytes username, User &userOut)
+	User MemoryLookup::getByName(bytes username)
 	{
 		printf("ble ble ble \n");
 		std::map<bytes, User>::iterator iter;
 		iter = db.find(username);
-		if (iter == db.end()) return false;
-		userOut = iter->second;
-		return 0;
+		if (iter == db.end()) throw DsrpException("User not found.");
+		return iter->second;
 	}
 	
 	bool MemoryLookup::userAdd(User user)

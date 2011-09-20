@@ -10,6 +10,7 @@
 #include "hashinterface.hpp"
 #include "mathinterface.hpp"
 #include "randominterface.hpp"
+#include "srpverificator.hpp"
 
 #include "ng.hpp"
 
@@ -25,21 +26,26 @@ namespace Dsrp
 	template<class LookupPolicy, class HashPolicy, class MathPolicy, class RandomPolicy>
 	class SrpServer : public LookupPolicy, MathPolicy, RandomPolicy
 	{	
+		using LookupPolicy::getByName;
+		
 		public:
 			SrpServer(Ng ngVal) :
 				ng(ngVal)
 			{
-				
+				setNg(ng);
 			}			
 			
-			int setUsername(bytes username) // C
+			SrpVerificator getVerificator(const bytes &username, const bytes &AA)
 			{
 				// check status of authentification
-				// usr = ul.getByName(username);
+				User usr = this->getByName(username);
+				bytes M1, M2, K;
+				//serverChallange(username, usr.getSalt(), usr.getVerificator(), AA, 
+				
 				return 0;
 			}
 						
-			int setA(bytes AA) // A
+			int setA(const bytes &AA) // A
 			{
 				// check status of authentification
 				A = AA;
@@ -48,10 +54,6 @@ namespace Dsrp
 
 			
 		private:
-			//User usr;
-			bytes A;
-			bytes b;
-			bytes B;
 			Ng ng;
 	};
 }

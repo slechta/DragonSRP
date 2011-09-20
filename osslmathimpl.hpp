@@ -12,6 +12,8 @@
 #include "ng.hpp"
 #include "osslhelp.hpp"
 
+#include "dsrpexception.hpp"
+
 namespace Dsrp
 {
 	template<class HashPolicy>
@@ -55,9 +57,8 @@ namespace Dsrp
 			}
 
 			// A = g^a mod N
-			int calculateA(const bytes &aa, bytes &A_out)
+			void calculateA(const bytes &aa, bytes &A_out)
 			{
-				int ret = -1; // Default fail
 				BIGNUM *a = BN_new();
 				BIGNUM *A = BN_new();
 				BIGNUM *tmp1 = BN_new();
@@ -70,19 +71,14 @@ namespace Dsrp
 				BN_free(a);
 				BN_free(A);
 				BN_free(tmp1);
-				
-				return ret;
 			}
 			
 			// u = H(A || B)
 			// x = H(salt || H(username || ":" || password)
 			// S = (B - k*(g^x)) ^ (a + ux)
 			// K = H(S)
-			int clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &K_out, bytes &M1_out)
-			{
-				// Safety SRP6a check necessary !!!!!!!!!!
-				bool rval = -1; // default fail
-				
+			void clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &K_out, bytes &M1_out)
+			{	
 				BIGNUM *B = BN_new();
 				BIGNUM *x = BN_new();
 				BIGNUM *a = BN_new();
@@ -130,8 +126,19 @@ namespace Dsrp
 				
 					// Calculate M1
 					M1_out = calculateM1(username, salt, AA, BB, K_out);
+				}
+				else
+				{
+					BN_free(B);
+					BN_free(x);
+					BN_free(a);
+					BN_free(u);
+					BN_free(tmp1);
+					BN_free(tmp2);
+					BN_free(tmp3);
+					BN_free(S);
 					
-					rval = 0;
+					throw DsrpException("Dsrp:Authentification failed:B or u is zero.");
 				}
 				
 				BN_free(B);
@@ -142,14 +149,11 @@ namespace Dsrp
 				BN_free(tmp2);
 				BN_free(tmp3);
 				BN_free(S);
-				
-				return rval;		
+					
 			}
 			
-			int serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &M1_out, bytes &M2_out, bytes &K_out)
+			void serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &B_out, bytes &M1_out, bytes &M2_out, bytes &K_out)
 			{
-				int rval = -1; // default fail
-				
 				HashPolicy hf;
 				
 				bytes SS;
@@ -179,6 +183,7 @@ namespace Dsrp
 					BN_mod_mul(tmp1, k, v, N, ctx);
 					BN_mod_exp(tmp2, g, b, N, ctx);
 					BN_mod_add(B, tmp1, tmp2, N, ctx);
+					bignum2bytes(B, B_out);
 				
 					// Calculate u = H(A || B)
 					bytes AABB = AA;
@@ -204,8 +209,19 @@ namespace Dsrp
 					toHashM2.insert(toHashM2.end(), M1_out.begin(), M1_out.end());
 					toHashM2.insert(toHashM2.end(), K_out.begin(), K_out.end());
 					M2_out = hf.hash(toHashM2);
+				}
+				else
+				{
+					BN_free(A);
+					BN_free(b);
+					BN_free(B);
+					BN_free(v);
+					BN_free(S);
+					BN_free(u);
+					BN_free(tmp1);
+					BN_free(tmp2);
 					
-					rval = 0;
+					throw DsrpException("Dsrp:Authentification failed:serverChalange: invalid parameters");
 				}
 				
 				BN_free(A);
@@ -215,9 +231,7 @@ namespace Dsrp
 				BN_free(S);
 				BN_free(u);
 				BN_free(tmp1);
-				BN_free(tmp2);
-				
-				return rval;					
+				BN_free(tmp2);				
 			}
 			
 		private:

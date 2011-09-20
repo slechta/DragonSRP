@@ -10,7 +10,7 @@ namespace Dsrp
 	class LookupInterface
 	{
 		public:
-			virtual bool getByName(bytes username, User &userOut)=0; // returns true on success
+			virtual User getByName(bytes username)=0; // throws if user not found
 	};
 	
 }

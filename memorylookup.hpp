@@ -12,7 +12,7 @@ namespace Dsrp
 	class MemoryLookup : public LookupInterface
 	{
 		public:
-			bool getByName(bytes username, User &userOut); // returns true on success
+			User getByName(bytes username); // throws DsrpException if user not found
 			bool userAdd(User user); // returns true on success
 			
 		private:
