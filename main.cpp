@@ -1,5 +1,6 @@
 
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -21,26 +22,24 @@ using namespace std;
 
 int main(int argc, char **argv)
 {	
-	printf("baf1\n");
-	Ng ng = Ng::predefined(4096);
+	try {
+		Ng ng = Ng::predefined(4096);
+		OsslSha256 hash;
+		OsslMathImpl math(hash, ng);
+		OsslRandom random;
+		MemoryLookup lookup;
+		SrpServer srpserver(lookup, math, random);
+		SrpVerificator ver = srpserver.getVerificator(string2bytes("testuser"), string2bytes("libovolne, nutno dodelat hex"));
+	}
+	catch (DsrpException e)
+	{
+		cout << "DsrpException: " << e.what() << endl;
+	}
+	catch (...)
+	{
+		cout << "unknown exception occures" << endl;
+	}
 	
-	/*
-	printf("baf2\n");
-	OsslSha256 hash;
-	printf("baf2B\n");
-	OsslMathImpl math(hash, ng);
-	printf("baf2C\n");
-	OsslRandom random;
-	printf("baf2D\n");
-	MemoryLookup lookup;
-	
-	printf("baf3\n");
-	SrpServer srpserver(lookup, math, random);
-	
-	printf("baf4\n");
-	SrpVerificator ver = srpserver.getVerificator(string2bytes("testuser"), string2bytes("libovolne, nutno dodelat hex"));
-	
-	*/
 	printf("baf5\n");
 	 
 	return 0;
