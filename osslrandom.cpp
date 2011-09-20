@@ -6,45 +6,43 @@
 
 namespace Dsrp
 {
-	OsslRandom::OsslRandom()
+	OsslRandom::OsslRandom() :
+		initOk(false)
 	{
-		
+		FILE *fp = 0;
+		unsigned char buff[128];
+
+		fp = fopen("/dev/urandom", "r");
+        
+		if (fp)
+		{
+			fread(buff, sizeof(buff), 1, fp);
+			fclose(fp);
+		}
+		else throw DsrpException("Could not initialize random number generator");
+	
+		RAND_seed(buff, sizeof(buff));
+		initOk = true;
 	}
 	
-	bool OsslRandom::getRandom(bytes &out, unsigned int len)
+	bytes OsslRandom::getRandom(unsigned int lenBytes)
 	{
-		if (len <= 0) return false; // fail
-		unsigned char *r = (unsigned char *) malloc(len);
-		if (r == NULL) return false;
-		int rval = RAND_bytes(r, len);
+		if (!initOk) throw DsrpException("Could not get random number - PRNG not initialized");
+		if (lenBytes <= 0) throw DsrpException("Could not get random number - size is zero or negative");
+		unsigned char *r = (unsigned char *) malloc(lenBytes);
+		if (r == NULL) throw DsrpException("Could not get random number - malloc() failed");;
+		int rval = RAND_bytes(r, lenBytes);
 		
 		if (rval != 1)
 		{
 			free(r);
-			return false;
+			throw DsrpException("Could not get random number");
 		}
 		
-		copy(r, r + len, out.begin());
+		bytes out;
+		copy(r, r + lenBytes, out.begin());
 		free(r);
-		return true;
+		return out;
 	}
 	
-}
-
-
-int init_random()
-{    
-    FILE *fp = 0;
-    unsigned char buff[128];
-
-    fp = fopen("/dev/urandom", "r");
-        
-    if (fp)
-    {
-        fread(buff, sizeof(buff), 1, fp);
-		fclose(fp);
-    }
-    else return -1;
-	
-    RAND_seed(buff, sizeof(buff));
 }

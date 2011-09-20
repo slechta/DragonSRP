@@ -153,7 +153,7 @@ namespace Dsrp
 		
 		BN_mod(tmp1, A, N, ctx);
 		
-		// i added the v != 0 check
+		// I added the v != 0 check
 		if (!BN_is_zero(tmp1) && !BN_is_zero(v))
 		{
 		

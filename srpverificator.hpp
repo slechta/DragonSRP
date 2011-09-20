@@ -11,31 +11,11 @@ namespace Dsrp
 	class SrpVerificator
 	{
 		public:
-			SrpVerificator(bytes userName, bytes userSalt, bytes B, bytes calculated_M1, bytes calculated_M2)
-				: salt(userSalt),
-				  BB(B),
-				  calc_M1(calculated_M1), 
-				  calc_M2(calculated_M2),
-				  username(userName)
-				  
-			{
-				
-			}
-		
-			bytes getSalt()
-			{
-				return salt;
-			}
+			SrpVerificator(bytes userName, bytes userSalt, bytes B, bytes calculated_M1, bytes calculated_M2);
+			bytes getSalt();
+			bytes getB();
+			bytes getUsername();
 			
-			bytes getB()
-			{
-				return BB;
-			}
-		
-			bytes getUsername()
-			{
-				return username;
-			}
 		
 		/*
 			void authenticate(const bytes &M1_from_client, bytes &M2_to_client, bytes &session_K)

@@ -10,8 +10,8 @@ namespace Dsrp
 	{
 		public:
 			// returns true on success
-			virtual ~RandomInterface()=0;
-			virtual bool getRandom(bytes &out, unsigned int len)=0;
+			virtual ~RandomInterface()=0; // throws on error
+			virtual bytes getRandom(unsigned int lenBytes)=0; // throws on error
 		
 	};
 }

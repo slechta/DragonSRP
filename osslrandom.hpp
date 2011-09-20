@@ -4,6 +4,7 @@
 
 #include "common.hpp"
 #include "randominterface.hpp"
+#include "dsrpexception.hpp"
 
 namespace Dsrp
 {
@@ -11,10 +12,10 @@ namespace Dsrp
 	{
 		public:
 			OsslRandom();
-			bool getRandom(bytes &out, unsigned int len);
+			bytes getRandom(unsigned int lenBytes);
 		private:
 			FILE *fp;
-			int init_ret;
+			bool initOk;
 	};
 }
 
