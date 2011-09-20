@@ -3,33 +3,18 @@
 
 namespace Dsrp
 {
-    OsslMathImpl::OsslMathImpl(HashInterface &hashInterface, Ng ng) :
-		MathInterface(hashInterface, ng),
+    OsslMathImpl::OsslMathImpl(HashInterface &hashInterface, Ng ngVal) :
+		MathInterface(hashInterface, ngVal),
         N(BN_new()),
         g(BN_new()),
         k(BN_new()),
         ctx(BN_CTX_new())
     {
-        BN_zero(N);
-        BN_zero(g);
-        BN_zero(k);
-    }
-            
-    OsslMathImpl::~OsslMathImpl()
-    {
-        BN_free(N);
-        BN_free(g);
-        BN_free(k);
-        BN_CTX_free(ctx);
-    }
-            
-    bytes OsslMathImpl::setNg(Ng ng)
-    {
         // checkNg()????
         // set that we set Ng as bool
         
-        bytes NN = ng.getN();
-        bytes gg = ng.getg();
+        bytes NN = ngVal.getN(); // could also use ng from base class
+        bytes gg = ngVal.getg();
         
         bytes2bignum(NN, N);
         bytes2bignum(gg, g);
@@ -38,6 +23,14 @@ namespace Dsrp
         both.insert(both.end(), gg.begin(), gg.end());
         bytes kk = hash.hash(both);
         bytes2bignum(kk, k);
+    }
+            
+    OsslMathImpl::~OsslMathImpl()
+    {
+        BN_free(N);
+        BN_free(g);
+        BN_free(k);
+        BN_CTX_free(ctx);
     }
 
     // A = g^a mod N
