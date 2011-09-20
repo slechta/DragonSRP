@@ -1,5 +1,6 @@
 
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <openssl/sha.h>
 
@@ -26,6 +27,7 @@ namespace Dsrp
 		SHA256_Final(md, &context);
 		
 		bytes ret;
+		ret.resize(SHA256_DIGEST_LENGTH);
 		copy(arr, arr + SHA256_DIGEST_LENGTH, ret.begin());
 		free(arr);
 		return ret;
