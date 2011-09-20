@@ -19,7 +19,7 @@ namespace Dsrp
 		bytes M1, M2, K, B;
 		bytes b = random.getRandom(32); // WTF? dont know how much, throws on error
 		math.serverChallange(username, usr.getSalt(), usr.getVerificator(), AA, b, B, M1, M2, K); // throws on error
-		return SrpVerificator(username, usr.getSalt(), B, M1, M2);
+		return SrpVerificator(username, usr.getSalt(), B, M1, M2, K);
 	}
 			
 	

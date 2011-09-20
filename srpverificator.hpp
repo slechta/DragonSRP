@@ -11,36 +11,19 @@ namespace Dsrp
 	class SrpVerificator
 	{
 		public:
-			SrpVerificator(bytes userName, bytes userSalt, bytes B, bytes calculated_M1, bytes calculated_M2);
+			SrpVerificator(bytes userName, bytes userSalt, bytes B, bytes calculated_M1, bytes calculated_M2, bytes K);
 			bytes getSalt();
 			bytes getB();
 			bytes getUsername();
-			
-		
-		/*
-			void authenticate(const bytes &M1_from_client, bytes &M2_to_client, bytes &session_K)
-			{
-				if (calc_M1 != M1_from_client) throw DsrpException("Authentification failed; possibly wrong password");
-								
-			}
-		*/
-			
-		
-			
+			void authenticate(const bytes &M1_from_client, bytes &M2_to_client, bytes &session_K);
+					
 		private:
 			bytes salt;
 			bytes BB;
 			bytes calc_M1;
 			bytes calc_M2;
-			bytes KK;
+			bytes KK; // session key
 			bytes username;
-			
-		/*
-			bytes A;
-			bytes b;
-			bytes B;
-			
-		*/
 	};
 	
 }
