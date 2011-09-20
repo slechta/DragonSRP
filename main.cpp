@@ -21,8 +21,12 @@ using namespace std;
 int main(int argc, char **argv)
 {	
 	Ng ng = Ng::predefined(4096);
+	OsslSha256 hash;
+	OsslMathImpl math(hash, ng);
+	OsslRandom random;
+	MemoryLookup lookup;
 	
-	// SrpServer srpserver();
+	SrpServer srpserver(lookup, math, random);
 		
 	printf("baf\n");
 	 
