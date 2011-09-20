@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -Wall -ggdb
 LIBS = -lssl
 BIN = dsrp
-OBJ = main.o srpclient.o user.o osslhelp.o osslsha256.o memorylookup.o osslrandom.o ng.o hex.o dsrpexception.o lookupinterface.o hashinterface.o mathinterface.o randominterface.o
+OBJ = main.o srpclient.o user.o osslhelp.o osslsha256.o memorylookup.o osslrandom.o ng.o hex.o dsrpexception.o lookupinterface.o hashinterface.o mathinterface.o randominterface.o osslmathimpl.o
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@

@@ -16,24 +16,23 @@
 
 namespace Dsrp
 {
-	/* IMPORTANT: Type requirements!!!
-	 * All the types must inerhit the proper interface, 
-	 * for example MathPolicy must inerhit : public MathInterface
-	 * otherwise you will get terrible compiler errors.
-	 * 
-	 * Well if only C++0x had concepts :(
-	 */
-	template<class LookupPolicy, class HashPolicy, class MathPolicy, class RandomPolicy>
-	class SrpServer : public LookupPolicy, MathPolicy, RandomPolicy
+	class SrpServer
 	{	
-		using LookupPolicy::getByName;
-		
 		public:
-			SrpServer(Ng ngVal)
+			SrpServer(LookupInterface &lookupInterface,
+					  HashInterface &hashInterface,
+					  MathInterface &mathInterface,
+					  RandomInterface &randomInterface)	:
+						lookup(lookupInterface),
+						hash(hashInterface),
+						math(mathInterface),
+						random(randomInterface)
+					  
 			{
-				this->setNg(ngVal);
+			
 			}			
 			
+			/*
 			SrpVerificator getVerificator(const bytes &username, const bytes &AA)
 			{
 				// check status of authentification
@@ -43,7 +42,14 @@ namespace Dsrp
 				
 				return 0;
 			}
-
+			*/
+			
+			
+		private:
+			LookupInterface &lookup;
+			HashInterface &hash;
+			MathInterface &math;
+			RandomInterface &random;
 	};
 }
 

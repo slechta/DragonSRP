@@ -19,18 +19,10 @@ using namespace Dsrp;
 using namespace std;
 
 int main(int argc, char **argv)
-{
-	
-	/*
-	MemoryLookup ml;
-	OsslSha256 hash;
-	OsslMathImpl<OsslSha256> math;
-	OsslRandom rand;
-	*/
-	
+{	
 	Ng ng = Ng::predefined(4096);
 	
-	SrpServer<MemoryLookup, OsslSha256, OsslMathImpl<OsslSha256>, OsslRandom > srpserver(ng);
+	// SrpServer srpserver();
 		
 	printf("baf\n");
 	 
