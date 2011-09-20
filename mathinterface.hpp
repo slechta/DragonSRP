@@ -11,7 +11,7 @@ namespace Dsrp
 	class MathInterface
 	{
 		public:
-			MathInterface(HashInterface &hashInterface);
+			MathInterface(HashInterface &hashInterface, Ng ngVal);
             virtual ~MathInterface()=0;
 			virtual bytes setNg(Ng ng)=0;
 			virtual void calculateA(const bytes &aa, bytes &A_out)=0;
@@ -19,6 +19,7 @@ namespace Dsrp
 			virtual void serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &B_out, bytes &M1_out, bytes &M2_out, bytes &K_out)=0;
 		protected:
 			HashInterface &hash;
+			Ng ng;
 	};
 }
 

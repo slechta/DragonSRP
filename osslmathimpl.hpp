@@ -19,7 +19,7 @@ namespace Dsrp
 	class OsslMathImpl : public MathInterface
 	{
 		public:
-			OsslMathImpl(HashInterface &hashInterface);
+			OsslMathImpl(HashInterface &hashInterface, Ng ng);
 			~OsslMathImpl();
 			bytes setNg(Ng ng);
 			void calculateA(const bytes &aa, bytes &A_out);

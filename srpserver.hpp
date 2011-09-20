@@ -20,11 +20,9 @@ namespace Dsrp
 	{	
 		public:
 			SrpServer(LookupInterface &lookupInterface,
-					  HashInterface &hashInterface,
 					  MathInterface &mathInterface,
 					  RandomInterface &randomInterface)	:
 						lookup(lookupInterface),
-						hash(hashInterface),
 						math(mathInterface),
 						random(randomInterface)
 					  
@@ -47,7 +45,6 @@ namespace Dsrp
 			
 		private:
 			LookupInterface &lookup;
-			HashInterface &hash;
 			MathInterface &math;
 			RandomInterface &random;
 	};

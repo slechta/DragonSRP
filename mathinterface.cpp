@@ -3,12 +3,14 @@
 
 namespace Dsrp
 {
-	MathInterface::MathInterface(HashInterface &hashInterface)
-		: hash(hashInterface)
+	MathInterface::MathInterface(HashInterface &hashInterface, Ng ngVal)
+		: hash(hashInterface),
+		  ng(ngVal)
 	{
 		
 	}
 	
+	// Virtual destructor
 	MathInterface::~MathInterface()
 	{
 		// emtpy

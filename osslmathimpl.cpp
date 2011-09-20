@@ -3,8 +3,8 @@
 
 namespace Dsrp
 {
-    OsslMathImpl::OsslMathImpl(HashInterface &hashInterface) :
-		MathInterface(hashInterface),
+    OsslMathImpl::OsslMathImpl(HashInterface &hashInterface, Ng ng) :
+		MathInterface(hashInterface, ng),
         N(BN_new()),
         g(BN_new()),
         k(BN_new()),
