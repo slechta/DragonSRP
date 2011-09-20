@@ -8,6 +8,11 @@
 
 namespace Dsrp
 {
+	OsslSha256::~OsslSha256()
+	{
+		// empty
+	}
+	
 	bytes OsslSha256::hash(const bytes &in)
 	{
 		int len;

@@ -17,6 +17,7 @@ namespace Dsrp
 	class MathInterface
 	{
 		public:
+            virtual ~MathInterface()=0;
 			virtual bytes setNg(Ng ng)=0;
 			virtual void calculateA(const bytes &aa, bytes &A_out)=0;
 			virtual void clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &K_out, bytes &M1_out)=0;	

@@ -10,6 +10,7 @@ namespace Dsrp
 	class HashInterface
 	{
 		public:
+			virtual ~HashInterface() = 0;
 			virtual bytes hash(const bytes &in)=0;
 			virtual unsigned int outputLen()=0;
 	};
