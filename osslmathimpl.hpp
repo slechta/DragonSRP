@@ -26,7 +26,9 @@ namespace Dsrp
 				k(BN_new()),
 				ctx(BN_CTX_new())
 			{
-				
+				BN_zero(N);
+				BN_zero(g);
+				BN_zero(k);
 			}
 			
 			
@@ -59,6 +61,7 @@ namespace Dsrp
 			// A = g^a mod N
 			void calculateA(const bytes &aa, bytes &A_out)
 			{
+				checkNg(); // will throw on error
 				BIGNUM *a = BN_new();
 				BIGNUM *A = BN_new();
 				BIGNUM *tmp1 = BN_new();
@@ -79,6 +82,7 @@ namespace Dsrp
 			// K = H(S)
 			void clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &K_out, bytes &M1_out)
 			{	
+				checkNg(); // will throw on error
 				BIGNUM *B = BN_new();
 				BIGNUM *x = BN_new();
 				BIGNUM *a = BN_new();
@@ -154,6 +158,7 @@ namespace Dsrp
 			
 			void serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &B_out, bytes &M1_out, bytes &M2_out, bytes &K_out)
 			{
+				checkNg(); // will throw on error
 				HashPolicy hf;
 				
 				bytes SS;
@@ -263,6 +268,13 @@ namespace Dsrp
 				toHash.insert(toHash.end(), K.begin(), K.end());
 				
 				return hf.hash(toHash);
+			}
+			
+			void checkNg()
+			{
+				if (BN_is_zero(N)) throw DsrpException("OsslMathImpl: N was not set");
+				if (BN_is_zero(g)) throw DsrpException("OsslMathImpl: g was not set");
+				if (BN_is_zero(k)) throw DsrpException("OsslMathImpl: k was not set");
 			}
 			
 			BIGNUM *N;
