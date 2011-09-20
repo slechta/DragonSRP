@@ -29,10 +29,9 @@ namespace Dsrp
 		using LookupPolicy::getByName;
 		
 		public:
-			SrpServer(Ng ngVal) :
-				ng(ngVal)
+			SrpServer(Ng ngVal)
 			{
-				setNg(ng);
+				this->setNg(ngVal);
 			}			
 			
 			SrpVerificator getVerificator(const bytes &username, const bytes &AA)
@@ -44,17 +43,7 @@ namespace Dsrp
 				
 				return 0;
 			}
-						
-			int setA(const bytes &AA) // A
-			{
-				// check status of authentification
-				A = AA;
-				return 0;
-			}
 
-			
-		private:
-			Ng ng;
 	};
 }
 
