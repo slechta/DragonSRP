@@ -20,7 +20,8 @@ namespace DragonSRP
 			static bytes string2bytes(const std::string &str);
 			static bytes string2bytes(const char *str);
 			
-			static bytes hexCString2bytes(const char *in); // throws ConversionException
+			static bytes hexstring2bytes(const std::string &in);
+			static bytes hexstring2bytes(const char *in); // throws ConversionException
 				
 			// some should be private
 			static char *mygetline(char *line, int size);

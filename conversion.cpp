@@ -129,13 +129,18 @@ namespace DragonSRP
 	  for (i = 0; i < len; i++) printf("%.2X", array[i]);
 	}
 	*/
-	
-	bytes Conversion::hexCString2bytes(const char *in)
+
+	bytes Conversion::hexstring2bytes(const char *in)
 	{
 		int len;
 		unsigned char *arr = hextobyte(in, &len);
 		bytes ret = array2bytes(arr, len);
 		free(arr);
 		return ret;
+	}
+	
+	bytes Conversion::hexstring2bytes(const std::string &in)
+	{
+		return hexstring2bytes(in.c_str());
 	}
 }
