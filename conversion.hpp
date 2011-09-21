@@ -19,16 +19,19 @@ namespace DragonSRP
 			
 			static bytes string2bytes(const std::string &str);
 			static bytes string2bytes(const char *str);
+			
+			static bytes hexCString2bytes(const char *in); // throws ConversionException
 				
-		// some should be private
+			// some should be private
 			static char *mygetline(char *line, int size);
 			
-			static unsigned char *hextobyte(const char *hexstring, int *lenout);
-			static unsigned char *hexscan(int maxbyteslen, int *resultlen);
-			static void print_hex(unsigned char *array, int len);			
+			// static unsigned char *hexscan(int maxbyteslen, int *resultlen);
+			// static void print_hex(unsigned char *array, int len);			
 			
 		private:
-			static int hexnormalize(unsigned char *c); // should rather throw an exception - not really, deallocation
+			// Rather not use these directly if you dont have to, they are quite dangerous
+			static unsigned char *hextobyte(const char *hexstring, int *lenout); // rval must be free()d!!!
+			static int hexnormalize(unsigned char *c);
 	};
 }
 

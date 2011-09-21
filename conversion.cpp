@@ -69,35 +69,26 @@ namespace DragonSRP
 	  return 0; // Success
 	}
 
+	// returns without \0, return value must be free()d from memory!
 	unsigned char * Conversion::hextobyte(const char *hexstring, int *lenout)
 	{
 	  unsigned char *result;
-	  int i;
 	  unsigned char c1, c2;
 	 
-	  *lenout = 0;
-	  if ((strlen(hexstring) % 2) != 0) return NULL;
+	  if ((strlen(hexstring) % 2) != 0) throw ConversionException("Hex string must have even number of characters.");
 	  
 	  *lenout = strlen(hexstring) / 2;
 	  result = (unsigned char *) malloc(*lenout);
-	  if (result == NULL) return NULL;
 
-	  for (i = 0; i < *lenout; i++)
+	  for (int i = 0; i < *lenout; i++)
 	  {
 		c1 = *(hexstring + i * 2);
-
-		if (hexnormalize(&c1))
-		{ 
-		  free(result);
-		  return NULL;
-		}
-
 		c2 = *(hexstring + i * 2 + 1);
 
-		if (hexnormalize(&c2))
+		if (hexnormalize(&c1) || hexnormalize(&c2))
 		{ 
 		  free(result);
-		  return NULL;
+		  throw ConversionException("Invalid character detected - hex string can only consist of 0..9 a..f A..F; Didnt you forgot to trim newline?");
 		}
 
 		result[i] = c1 * 16 + c2;
@@ -106,6 +97,7 @@ namespace DragonSRP
 	  return result;
 	}
 
+/*
 	unsigned char * Conversion::hexscan(int maxbyteslen, int *resultlen)
 	{
 	   char *line;
@@ -129,10 +121,21 @@ namespace DragonSRP
 	   free(line);
 	   return result;
 	}
-
+*/
+	/*
 	void Conversion::print_hex(unsigned char *array, int len)
 	{
 	  int i;
 	  for (i = 0; i < len; i++) printf("%.2X", array[i]);
+	}
+	*/
+	
+	bytes Conversion::hexCString2bytes(const char *in)
+	{
+		int len;
+		unsigned char *arr = hextobyte(in, &len);
+		bytes ret = array2bytes(arr, len);
+		free(arr);
+		return ret;
 	}
 }

@@ -119,36 +119,29 @@ namespace DragonSRP
 	
 	Ng Ng::predefined(unsigned int bitlen)
 	{
-		unsigned char *arr_N, *arr_g;
-		int len_N, len_g;
+		bytes N, g;
 		
 		switch(bitlen)
 		{
 			case 1024:
-				arr_N = Conversion::hextobyte(constant_1024_N, &len_N);
-				arr_g = Conversion::hextobyte(constant_1024_g, &len_g);
+				N = Conversion::hexCString2bytes(constant_1024_N);
+				g = Conversion::hexCString2bytes(constant_1024_g);
+				
 				break;
 			case 2048:
-				arr_N = Conversion::hextobyte(constant_2048_N, &len_N);
-				arr_g = Conversion::hextobyte(constant_2048_g, &len_g);
+				
 				break;		
 			case 4096:
-				arr_N = Conversion::hextobyte(constant_4096_N, &len_N);
-				arr_g = Conversion::hextobyte(constant_4096_g, &len_g);
+				
 				break;
 			case 8192:
-				arr_N = Conversion::hextobyte(constant_2048_N, &len_N);
-				arr_g = Conversion::hextobyte(constant_2048_g, &len_g);
+				
 				break;
 			default:
 				// Nothing was allocated here, can throw without free()...
 				throw DsrpException("The bit len you have selected in Ng::predifined is unknown");
 		}
 		
-		bytes N = Conversion::array2bytes(arr_N, len_N);
-		bytes g = Conversion::array2bytes(arr_g, len_g);
-		free(arr_N);
-		free(arr_g);
 		return Ng(N, g);
 	}
 }

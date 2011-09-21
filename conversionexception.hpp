@@ -10,11 +10,8 @@ namespace DragonSRP
 	class ConversionException : public DsrpException
 	{
 		public:
-			ConversionException(const char *message, const bytes &userName);
-			ConversionException(std::string &message, const bytes &userName);
-		
-		private:
-			bytes username;
+			ConversionException(const char *message);
+			ConversionException(std::string &message);
 	};
 	
 }
