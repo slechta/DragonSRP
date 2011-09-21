@@ -16,6 +16,9 @@
 
 namespace DragonSRP
 {
+namespace Ossl
+{
+	
 	class OsslMathImpl : public MathInterface
 	{
 		public:
@@ -33,6 +36,9 @@ namespace DragonSRP
 			BIGNUM *k;
 			BN_CTX *ctx;
 	};
+	
+// Namespace endings
+}
 }
 
 #endif

@@ -2,9 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "osslmathimpl.hpp"
+#include "osslconversion.hpp"
 
 namespace DragonSRP
 {
+namespace Ossl
+{
+	
     OsslMathImpl::OsslMathImpl(HashInterface &hashInterface, Ng ngVal) :
 		MathInterface(hashInterface, ngVal),
         N(BN_new()),
@@ -18,13 +22,13 @@ namespace DragonSRP
         bytes NN = ngVal.getN(); // could also use ng from base class
         bytes gg = ngVal.getg();
         
-        Conversion::bytes2bignum(NN, N);
-        Conversion::bytes2bignum(gg, g);
+        OsslConversion::bytes2bignum(NN, N);
+        OsslConversion::bytes2bignum(gg, g);
         
         bytes both = NN;
         both.insert(both.end(), gg.begin(), gg.end());
         bytes kk = hash.hash(both);
-        Conversion::bytes2bignum(kk, k);
+        OsslConversion::bytes2bignum(kk, k);
     }
             
     OsslMathImpl::~OsslMathImpl()
@@ -43,10 +47,10 @@ namespace DragonSRP
         BIGNUM *A = BN_new();
         BIGNUM *tmp1 = BN_new();
                 
-        Conversion::bytes2bignum(aa, a);
+        OsslConversion::bytes2bignum(aa, a);
         BN_mod_exp(A, g, a, N, ctx);
                 
-        Conversion::bignum2bytes(A, A_out);
+        OsslConversion::bignum2bytes(A, A_out);
                 
         BN_free(a);
         BN_free(A);
@@ -73,8 +77,8 @@ namespace DragonSRP
 		bytes AandB = AA;
 		AandB.insert(AandB.end(), BB.begin(), BB.end());
 		bytes uu = hash.hash(AandB);
-		Conversion::bytes2bignum(uu, u);
-		Conversion::bytes2bignum(BB, B);
+		OsslConversion::bytes2bignum(uu, u);
+		OsslConversion::bytes2bignum(BB, B);
 		
 		// Calculate x = HASH(salt || HASH(username || ":" || password)
 		unsigned char colon = ':';
@@ -85,13 +89,13 @@ namespace DragonSRP
 		bytes hashTmp = hash.hash(sup);
 		hashTmp.insert(sup.begin(), salt.begin(), salt.end());
 		sup = hash.hash(hashTmp);
-		Conversion::bytes2bignum(sup, x);
+		OsslConversion::bytes2bignum(sup, x);
 		
 		//Calculate S
 		// SRP-6a safety check
 		if (!BN_is_zero(B) && !BN_is_zero(u))
 		{
-			Conversion::bytes2bignum(aa, a);
+			OsslConversion::bytes2bignum(aa, a);
 			BN_mod_mul(tmp1, u, x, N, ctx);    /* tmp1 = ux */
 			BN_mod_add(tmp2, a, tmp1, N, ctx); /* tmp2 = a+ux  */
 			BN_mod_exp(tmp1, g, x, N, ctx);    /* tmp1 = (g^x)%N */
@@ -101,7 +105,7 @@ namespace DragonSRP
 			
 			// Calculate K
 			bytes SS;
-			Conversion::bignum2bytes(S, SS);
+			OsslConversion::bignum2bytes(S, SS);
 			K_out = hash.hash(SS);
 		
 			// Calculate M1
@@ -147,8 +151,8 @@ namespace DragonSRP
 		BIGNUM *tmp1 = BN_new();
 		BIGNUM *tmp2 = BN_new();
 
-		Conversion::bytes2bignum(bb, b);
-		Conversion::bytes2bignum(verificator, v);
+		OsslConversion::bytes2bignum(bb, b);
+		OsslConversion::bytes2bignum(verificator, v);
 		
 		// there is neccessary to add the SRP6a security check
 		// SRP-6a safety check
@@ -163,22 +167,22 @@ namespace DragonSRP
 			BN_mod_mul(tmp1, k, v, N, ctx);
 			BN_mod_exp(tmp2, g, b, N, ctx);
 			BN_mod_add(B, tmp1, tmp2, N, ctx);
-			Conversion::bignum2bytes(B, B_out);
+			OsslConversion::bignum2bytes(B, B_out);
 		
 			// Calculate u = H(A || B)
 			bytes AABB = AA;
 			bytes BB;
-			Conversion::bignum2bytes(B, BB);
+			OsslConversion::bignum2bytes(B, BB);
 			
 			AABB.insert(AABB.end(), BB.begin(), BB.end());
 			bytes uu = hash.hash(AABB);
-			Conversion::bytes2bignum(uu, u);
+			OsslConversion::bytes2bignum(uu, u);
 		
 			// Calculate S = (A *(v^u)) ^ b
 			BN_mod_exp(tmp1, v, u, N, ctx);
 			BN_mod_mul(tmp2, A, tmp1, N, ctx);
 			BN_mod_exp(S, tmp2, b, N, ctx);
-			Conversion::bignum2bytes(S, SS);
+			OsslConversion::bignum2bytes(S, SS);
 			K_out = hash.hash(SS);
 			
 			// Calculate M1 = H(H(N) XOR H(g) || H (s || A || B || K))
@@ -220,8 +224,8 @@ namespace DragonSRP
 		bytes NN;
 		bytes gg;
 		
-		Conversion::bignum2bytes(N, NN);
-		Conversion::bignum2bytes(g, gg);
+		OsslConversion::bignum2bytes(N, NN);
+		OsslConversion::bignum2bytes(g, gg);
 		
 		bytes H_N = hash.hash(NN); 
 		bytes H_g = hash.hash(gg);
@@ -248,5 +252,7 @@ namespace DragonSRP
 		if (BN_is_zero(g)) throw DsrpException("OsslMathImpl: g was not set");
 		if (BN_is_zero(k)) throw DsrpException("OsslMathImpl: k was not set");
 	}
-    
+ 
+// Namespace endings   
+}
 }
