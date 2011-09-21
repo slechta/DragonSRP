@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "ng.hpp"
 #include "common.hpp"
+#include "ng.hpp"
 #include "conversion.hpp"
-#include "hex.hpp"
+#include "dsrpexception.hpp"
 
 namespace DragonSRP
 {
@@ -117,57 +117,38 @@ namespace DragonSRP
 		return g;
 	}
 	
-	
-	// Ugly: FIX ME!
 	Ng Ng::predefined(unsigned int bitlen)
 	{
-		bytes N, g;
 		unsigned char *arr_N, *arr_g;
 		int len_N, len_g;
 		
 		switch(bitlen)
 		{
 			case 1024:
-				arr_N = hextobyte(constant_1024_N, &len_N);
-				arr_g = hextobyte(constant_1024_g, &len_g);
+				arr_N = Conversion::hextobyte(constant_1024_N, &len_N);
+				arr_g = Conversion::hextobyte(constant_1024_g, &len_g);
 				break;
 			case 2048:
-				arr_N = hextobyte(constant_2048_N, &len_N);
-				arr_g = hextobyte(constant_2048_g, &len_g);
+				arr_N = Conversion::hextobyte(constant_2048_N, &len_N);
+				arr_g = Conversion::hextobyte(constant_2048_g, &len_g);
 				break;		
 			case 4096:
-				std::cout << "predefined0" << std::endl;
-				arr_N = hextobyte(constant_4096_N, &len_N);
-				std::cout << "predefined1" << std::endl;
-				arr_g = hextobyte(constant_4096_g, &len_g);
-				std::cout << "predefined2" << std::endl;
+				arr_N = Conversion::hextobyte(constant_4096_N, &len_N);
+				arr_g = Conversion::hextobyte(constant_4096_g, &len_g);
 				break;
 			case 8192:
-				arr_N = hextobyte(constant_2048_N, &len_N);
-				arr_g = hextobyte(constant_2048_g, &len_g);
+				arr_N = Conversion::hextobyte(constant_2048_N, &len_N);
+				arr_g = Conversion::hextobyte(constant_2048_g, &len_g);
 				break;
-			default: // 4096
-				arr_N = hextobyte(constant_4096_N, &len_N);
-				arr_g = hextobyte(constant_4096_g, &len_g);
+			default:
+				// Nothing was allocated here, can throw without free()...
+				throw DsrpException("The bit len you have selected in Ng::predifined is unknown");
 		}
 		
-		std::cout << "len_N:" << len_N << std::endl;
-		std::cout << "len_g:" << len_g << std::endl;
-		printf("arr_N: %p\n", arr_N);
-		
-		print_hex(arr_N, len_N);
-		std::cout << std::endl;
-		N.resize(len_N);
-		std::cout << "predefined3" << std::endl;
-		//std::copy(arr_N, arr_N + 1, N.begin());
-		std::cout << "predefined4" << std::endl;
-		//copy(arr_g, arr_g + len_g, g.begin());
-		//std::cout << "predefined5" << std::endl;
-		
-		
+		bytes N = Conversion::array2bytes(arr_N, len_N);
+		bytes g = Conversion::array2bytes(arr_g, len_g);
 		free(arr_N);
 		free(arr_g);
-		std::cout << "predefined6" << std::endl;
 		return Ng(N, g);
 	}
 }

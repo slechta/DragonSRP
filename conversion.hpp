@@ -19,7 +19,16 @@ namespace DragonSRP
 			
 			static bytes string2bytes(const std::string &str);
 			static bytes string2bytes(const char *str);
-		
+				
+		// some should be private
+			static char *mygetline(char *line, int size);
+			
+			static unsigned char *hextobyte(const char *hexstring, int *lenout);
+			static unsigned char *hexscan(int maxbyteslen, int *resultlen);
+			static void print_hex(unsigned char *array, int len);			
+			
+		private:
+			static int hexnormalize(unsigned char *c); // should rather throw an exception - not really, deallocation
 	};
 }
 
