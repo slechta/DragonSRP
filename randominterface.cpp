@@ -1,7 +1,7 @@
 
 #include "randominterface.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	RandomInterface::~RandomInterface()
 	{

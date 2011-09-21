@@ -6,7 +6,7 @@
 #include "ng.hpp"
 #include "hashinterface.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class MathInterface
 	{

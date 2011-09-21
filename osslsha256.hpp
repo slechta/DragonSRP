@@ -5,7 +5,7 @@
 #include "common.hpp"
 #include "hashinterface.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class OsslSha256 : public HashInterface
 	{

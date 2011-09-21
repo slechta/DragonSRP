@@ -1,7 +1,7 @@
 
 #include "hashinterface.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	HashInterface::~HashInterface()
 	{

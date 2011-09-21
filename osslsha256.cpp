@@ -7,7 +7,7 @@
 #include "osslsha256.hpp"
 #include "conversion.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	OsslSha256::~OsslSha256()
 	{

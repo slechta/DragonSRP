@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace Dsrp
+namespace DragonSRP
 {
 	typedef std::vector<unsigned char> bytes;
 }

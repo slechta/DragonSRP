@@ -1,7 +1,7 @@
 
 #include "conversion.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	void Conversion::bytes2bignum(const bytes &in, BIGNUM *out)
 	{
@@ -38,14 +38,6 @@ namespace Dsrp
 		ret.resize(len);
 		copy(in, in + len, ret.begin());
 		return ret;
-	}
-	
-	// returns without \0
-	void Conversion::string2bytes(const std::string &str, bytes &out)
-	{
-		const char *s = str.c_str();
-		out.resize(str.size()); // important, otherwise SIGSEGV
-		copy(s, s + str.size(), out.begin());
 	}
 	
 	// returns without \0

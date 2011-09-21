@@ -6,7 +6,7 @@
 #include "randominterface.hpp"
 #include "dsrpexception.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class OsslRandom : public RandomInterface
 	{

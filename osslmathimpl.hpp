@@ -14,7 +14,7 @@
 
 #include "dsrpexception.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class OsslMathImpl : public MathInterface
 	{

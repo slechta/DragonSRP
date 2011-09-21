@@ -2,7 +2,7 @@
 
 #include "dsrpexception.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	DsrpException::DsrpException(const char *message)
 	{

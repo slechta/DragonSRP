@@ -1,7 +1,7 @@
 
 #include "srpverificator.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	SrpVerificator::SrpVerificator(bytes userName, bytes userSalt, bytes B, bytes calculated_M1, bytes calculated_M2, bytes K)
 		: salt(userSalt),

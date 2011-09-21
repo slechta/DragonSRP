@@ -1,7 +1,7 @@
 
 #include "user.hpp"
 
-namespace Dsrp 
+namespace DragonSRP 
 {	
 	/*
 	User::User()

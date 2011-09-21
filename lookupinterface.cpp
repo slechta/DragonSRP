@@ -1,7 +1,7 @@
 
 #include "lookupinterface.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	LookupInterface::~LookupInterface()
 	{

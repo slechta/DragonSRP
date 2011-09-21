@@ -19,7 +19,7 @@
 
 #include "usernotfoundexception.hpp"
 
-using namespace Dsrp;
+using namespace DragonSRP;
 using namespace std;
 
 int main(int argc, char **argv)

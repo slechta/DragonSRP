@@ -14,7 +14,7 @@
 
 #include "ng.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class SrpServer
 	{	

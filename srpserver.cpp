@@ -1,7 +1,7 @@
 
 #include "srpserver.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	
 	SrpServer::SrpServer(LookupInterface &lookupInterface, MathInterface &mathInterface, RandomInterface &randomInterface) :

@@ -6,7 +6,7 @@
 #include "user.hpp"
 #include "usernotfoundexception.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class User;
 	

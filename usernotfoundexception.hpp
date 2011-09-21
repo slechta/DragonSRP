@@ -5,7 +5,7 @@
 #include "common.hpp"
 #include "dsrpexception.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class UserNotFoundException : public DsrpException
 	{

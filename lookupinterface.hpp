@@ -5,7 +5,7 @@
 #include "common.hpp"
 #include "user.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class LookupInterface
 	{

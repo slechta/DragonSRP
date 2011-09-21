@@ -8,7 +8,7 @@
 #include "conversion.hpp"
 #include "hex.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	// Constants are from RFC 5054 - Appendix A
 	

@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class DsrpException
 	{

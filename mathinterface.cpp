@@ -1,7 +1,7 @@
 
 #include "mathinterface.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	MathInterface::MathInterface(HashInterface &hashInterface, Ng ngVal)
 		: hash(hashInterface),

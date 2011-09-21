@@ -5,7 +5,7 @@
 
 #include "common.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class HashInterface
 	{

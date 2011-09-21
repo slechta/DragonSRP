@@ -1,7 +1,7 @@
 
 #include "usernotfoundexception.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	UserNotFoundException::UserNotFoundException(const char *message, const bytes &userName) :
 		DsrpException(message),

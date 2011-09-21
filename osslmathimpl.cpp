@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "osslmathimpl.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
     OsslMathImpl::OsslMathImpl(HashInterface &hashInterface, Ng ngVal) :
 		MathInterface(hashInterface, ngVal),

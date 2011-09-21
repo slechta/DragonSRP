@@ -10,7 +10,7 @@
 #include "common.hpp"
 #include "conversionexception.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class Conversion
 	{
@@ -23,7 +23,6 @@ namespace Dsrp
 			static bytes array2bytes(const unsigned char *in, int len);
 			
 			// string2bytes
-			static void string2bytes(const std::string &str, bytes &out);
 			static bytes string2bytes(const std::string &str);
 			static bytes string2bytes(const char *str);
 		

@@ -7,7 +7,7 @@
 #include "lookupinterface.hpp"
 #include "user.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class MemoryLookup : public LookupInterface
 	{

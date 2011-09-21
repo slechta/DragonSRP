@@ -1,7 +1,7 @@
 
 #include "conversionexception.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	ConversionException::ConversionException(const char *message, const bytes &userName) :
 		DsrpException(message),

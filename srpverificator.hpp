@@ -6,7 +6,7 @@
 #include "user.hpp"
 #include "dsrpexception.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	class SrpVerificator
 	{

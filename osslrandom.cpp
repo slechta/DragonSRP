@@ -4,7 +4,7 @@
 #include <openssl/rand.h>
 #include "osslrandom.hpp"
 
-namespace Dsrp
+namespace DragonSRP
 {
 	OsslRandom::OsslRandom() :
 		initOk(false)
