@@ -126,16 +126,18 @@ namespace DragonSRP
 			case 1024:
 				N = Conversion::hexCString2bytes(constant_1024_N);
 				g = Conversion::hexCString2bytes(constant_1024_g);
-				
 				break;
 			case 2048:
-				
+				N = Conversion::hexCString2bytes(constant_2048_N);
+				g = Conversion::hexCString2bytes(constant_2048_g);
 				break;		
 			case 4096:
-				
+				N = Conversion::hexCString2bytes(constant_4096_N);
+				g = Conversion::hexCString2bytes(constant_4096_g);
 				break;
 			case 8192:
-				
+				N = Conversion::hexCString2bytes(constant_8192_N);
+				g = Conversion::hexCString2bytes(constant_8192_g);
 				break;
 			default:
 				// Nothing was allocated here, can throw without free()...
