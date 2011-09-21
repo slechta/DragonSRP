@@ -17,6 +17,8 @@
 #include "memorylookup.hpp"
 #include "ng.hpp"
 
+#include "usernotfoundexception.hpp"
+
 using namespace Dsrp;
 using namespace std;
 
@@ -30,6 +32,10 @@ int main(int argc, char **argv)
 		MemoryLookup lookup;
 		SrpServer srpserver(lookup, math, random);
 		SrpVerificator ver = srpserver.getVerificator(string2bytes("testuser"), string2bytes("libovolne, nutno dodelat hex"));
+	}
+	catch (UserNotFoundException e)
+	{
+		cout << "UserNotFoundException: " << e.what() << endl;
 	}
 	catch (DsrpException e)
 	{

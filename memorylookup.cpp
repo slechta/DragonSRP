@@ -4,7 +4,7 @@
 #include <iterator>
 #include "memorylookup.hpp"
 #include "user.hpp"
-#include "dsrpexception.hpp"
+#include "usernotfoundexception.hpp"
 
 namespace Dsrp
 {
@@ -15,7 +15,7 @@ namespace Dsrp
 		printf("ble ble ble \n");
 		std::map<bytes, User>::iterator iter;
 		iter = db.find(username);
-		if (iter == db.end()) throw DsrpException("User not found.");
+		if (iter == db.end()) throw UserNotFoundException("User not found.", username);
 		return iter->second;
 	}
 	
