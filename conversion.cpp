@@ -1,4 +1,5 @@
 
+#include <algorithm>
 #include "conversion.hpp"
 
 namespace DragonSRP
@@ -142,5 +143,12 @@ namespace DragonSRP
 	bytes Conversion::hexstring2bytes(const std::string &in)
 	{
 		return hexstring2bytes(in.c_str());
+	}
+	
+	void Conversion::printBytes(const bytes &in)
+	{
+		std::vector<unsigned char>::const_iterator from = in.begin();
+		std::vector<unsigned char>::const_iterator to = in.end();
+		for ( ; from!=to; ++from ) printf("%.2X", *from);
 	}
 }
