@@ -5,7 +5,7 @@
 #include <openssl/sha.h>
 
 #include "osslsha256.hpp"
-#include "osslhelp.hpp"
+#include "conversion.hpp"
 
 namespace Dsrp
 {
@@ -17,7 +17,7 @@ namespace Dsrp
 	bytes OsslSha256::hash(const bytes &in)
 	{
 		int len;
-		unsigned char *arr = bytes2array(in, &len);
+		unsigned char *arr = Conversion::bytes2array(in, &len);
 	
 		SHA256_CTX context;
 		unsigned char md[SHA256_DIGEST_LENGTH];
@@ -26,9 +26,8 @@ namespace Dsrp
 		SHA256_Update(&context, arr, len);
 		SHA256_Final(md, &context);
 		
-		bytes ret;
-		ret.resize(SHA256_DIGEST_LENGTH);
-		copy(arr, arr + SHA256_DIGEST_LENGTH, ret.begin());
+		bytes ret = Conversion::array2bytes(arr, SHA256_DIGEST_LENGTH);
+		
 		free(arr);
 		return ret;
 	}

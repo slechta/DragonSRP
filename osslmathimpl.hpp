@@ -10,7 +10,7 @@
 #include "common.hpp"
 #include "mathinterface.hpp"
 #include "ng.hpp"
-#include "osslhelp.hpp"
+#include "conversion.hpp"
 
 #include "dsrpexception.hpp"
 

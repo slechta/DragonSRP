@@ -13,7 +13,7 @@
 #include "osslsha256.hpp"
 #include "osslmathimpl.hpp"
 #include "osslrandom.hpp"
-#include "osslhelp.hpp"
+#include "conversion.hpp"
 #include "memorylookup.hpp"
 #include "ng.hpp"
 
@@ -30,8 +30,12 @@ int main(int argc, char **argv)
 		OsslMathImpl math(hash, ng);
 		OsslRandom random;
 		MemoryLookup lookup;
+		
+		// User u(string2bytes("testuser"), )
+		// lookup.addUser()
+		
 		SrpServer srpserver(lookup, math, random);
-		SrpVerificator ver = srpserver.getVerificator(string2bytes("testuser"), string2bytes("libovolne, nutno dodelat hex"));
+		SrpVerificator ver = srpserver.getVerificator(Conversion::string2bytes("testuser"), Conversion::string2bytes("libovolne, nutno dodelat hex"));
 	}
 	catch (UserNotFoundException e)
 	{

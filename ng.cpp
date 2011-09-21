@@ -5,7 +5,7 @@
 
 #include "ng.hpp"
 #include "common.hpp"
-#include "osslhelp.hpp"
+#include "conversion.hpp"
 #include "hex.hpp"
 
 namespace Dsrp

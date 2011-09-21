@@ -18,13 +18,13 @@ namespace Dsrp
         bytes NN = ngVal.getN(); // could also use ng from base class
         bytes gg = ngVal.getg();
         
-        bytes2bignum(NN, N);
-        bytes2bignum(gg, g);
+        Conversion::bytes2bignum(NN, N);
+        Conversion::bytes2bignum(gg, g);
         
         bytes both = NN;
         both.insert(both.end(), gg.begin(), gg.end());
         bytes kk = hash.hash(both);
-        bytes2bignum(kk, k);
+        Conversion::bytes2bignum(kk, k);
     }
             
     OsslMathImpl::~OsslMathImpl()
@@ -43,10 +43,10 @@ namespace Dsrp
         BIGNUM *A = BN_new();
         BIGNUM *tmp1 = BN_new();
                 
-        bytes2bignum(aa, a);
+        Conversion::bytes2bignum(aa, a);
         BN_mod_exp(A, g, a, N, ctx);
                 
-        bignum2bytes(A, A_out);
+        Conversion::bignum2bytes(A, A_out);
                 
         BN_free(a);
         BN_free(A);
@@ -73,8 +73,8 @@ namespace Dsrp
 		bytes AandB = AA;
 		AandB.insert(AandB.end(), BB.begin(), BB.end());
 		bytes uu = hash.hash(AandB);
-		bytes2bignum(uu, u);
-		bytes2bignum(BB, B);
+		Conversion::bytes2bignum(uu, u);
+		Conversion::bytes2bignum(BB, B);
 		
 		// Calculate x = HASH(salt || HASH(username || ":" || password)
 		unsigned char colon = ':';
@@ -85,13 +85,13 @@ namespace Dsrp
 		bytes hashTmp = hash.hash(sup);
 		hashTmp.insert(sup.begin(), salt.begin(), salt.end());
 		sup = hash.hash(hashTmp);
-		bytes2bignum(sup, x);
+		Conversion::bytes2bignum(sup, x);
 		
 		//Calculate S
 		// SRP-6a safety check
 		if (!BN_is_zero(B) && !BN_is_zero(u))
 		{
-			bytes2bignum(aa, a);
+			Conversion::bytes2bignum(aa, a);
 			BN_mod_mul(tmp1, u, x, N, ctx);    /* tmp1 = ux */
 			BN_mod_add(tmp2, a, tmp1, N, ctx); /* tmp2 = a+ux  */
 			BN_mod_exp(tmp1, g, x, N, ctx);    /* tmp1 = (g^x)%N */
@@ -101,7 +101,7 @@ namespace Dsrp
 			
 			// Calculate K
 			bytes SS;
-			bignum2bytes(S, SS);
+			Conversion::bignum2bytes(S, SS);
 			K_out = hash.hash(SS);
 		
 			// Calculate M1
@@ -147,8 +147,8 @@ namespace Dsrp
 		BIGNUM *tmp1 = BN_new();
 		BIGNUM *tmp2 = BN_new();
 
-		bytes2bignum(bb, b);
-		bytes2bignum(verificator, v);
+		Conversion::bytes2bignum(bb, b);
+		Conversion::bytes2bignum(verificator, v);
 		
 		// there is neccessary to add the SRP6a security check
 		// SRP-6a safety check
@@ -163,22 +163,22 @@ namespace Dsrp
 			BN_mod_mul(tmp1, k, v, N, ctx);
 			BN_mod_exp(tmp2, g, b, N, ctx);
 			BN_mod_add(B, tmp1, tmp2, N, ctx);
-			bignum2bytes(B, B_out);
+			Conversion::bignum2bytes(B, B_out);
 		
 			// Calculate u = H(A || B)
 			bytes AABB = AA;
 			bytes BB;
-			bignum2bytes(B, BB);
+			Conversion::bignum2bytes(B, BB);
 			
 			AABB.insert(AABB.end(), BB.begin(), BB.end());
 			bytes uu = hash.hash(AABB);
-			bytes2bignum(uu, u);
+			Conversion::bytes2bignum(uu, u);
 		
 			// Calculate S = (A *(v^u)) ^ b
 			BN_mod_exp(tmp1, v, u, N, ctx);
 			BN_mod_mul(tmp2, A, tmp1, N, ctx);
 			BN_mod_exp(S, tmp2, b, N, ctx);
-			bignum2bytes(S, SS);
+			Conversion::bignum2bytes(S, SS);
 			K_out = hash.hash(SS);
 			
 			// Calculate M1 = H(H(N) XOR H(g) || H (s || A || B || K))
@@ -220,8 +220,8 @@ namespace Dsrp
 		bytes NN;
 		bytes gg;
 		
-		bignum2bytes(N, NN);
-		bignum2bytes(g, gg);
+		Conversion::bignum2bytes(N, NN);
+		Conversion::bignum2bytes(g, gg);
 		
 		bytes H_N = hash.hash(NN); 
 		bytes H_g = hash.hash(gg);
