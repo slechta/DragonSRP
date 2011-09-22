@@ -9,30 +9,40 @@
 #include "srpverificator.hpp"
 #include "srpclient.hpp"
 #include "user.hpp"
+#include "ng.hpp"
 
+#include "dsrpexception.hpp"
+#include "conversionexception.hpp"
+#include "usernotfoundexception.hpp"
+
+/*
 #include "osslsha256.hpp"
 #include "osslmathimpl.hpp"
 #include "osslrandom.hpp"
 #include "conversion.hpp"
 #include "memorylookup.hpp"
-#include "ng.hpp"
+*/
 
-#include "usernotfoundexception.hpp"
+
 
 using namespace DragonSRP;
-using namespace DragonSRP::Ossl;
+// using namespace DragonSRP::Ossl;
 using namespace std;
 
 int main(int argc, char **argv)
 {	
+	/*
 	try {
+		bytes qq = Conversion::readBytesHexForce("qq");
+		cout << "Result: ";
+		Conversion::printBytes(qq);
+		
 		Ng ng = Ng::predefined(4096);
 		OsslSha256 hash;
 		OsslMathImpl math(hash, ng);
 		OsslRandom random;
 		MemoryLookup lookup;
 		
-		// User u(string2bytes("testuser"), )
 		// lookup.addUser()
 		
 		SrpServer srpserver(lookup, math, random);
@@ -50,8 +60,10 @@ int main(int argc, char **argv)
 	{
 		cout << "unknown exception occures" << endl;
 	}
+	*/
 	
 	printf("baf5\n");
+	
 	 
 	return 0;
 }
