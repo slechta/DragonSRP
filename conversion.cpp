@@ -1,5 +1,6 @@
 
 #include <algorithm>
+#include <iostream>
 #include "conversion.hpp"
 
 namespace DragonSRP
@@ -98,36 +99,10 @@ namespace DragonSRP
 	  return result;
 	}
 
-/*
-	unsigned char * Conversion::hexscan(int maxbyteslen, int *resultlen)
-	{
-	   char *line;
-	   char *hexstring;
-	   unsigned char *result;
-	   int linemaxlen;
-
-	   *resultlen = 0;
-	   linemaxlen = (maxbyteslen + 1) * 2;
-
-	   line = (char *) malloc(sizeof(char) * linemaxlen);
-	   if (line == NULL) return NULL;
-
-	   if (mygetline(line, linemaxlen) == NULL)
-	   {
-		 free(line);
-		 return NULL;
-	   }
-
-	   result = hextobyte(line, resultlen);
-	   free(line);
-	   return result;
-	}
-*/
 	/*
 	void Conversion::print_hex(unsigned char *array, int len)
 	{
-	  int i;
-	  for (i = 0; i < len; i++) printf("%.2X", array[i]);
+	  for (int i = 0; i < len; i++) printf("%.2X", array[i]);
 	}
 	*/
 
@@ -150,5 +125,23 @@ namespace DragonSRP
 		std::vector<unsigned char>::const_iterator from = in.begin();
 		std::vector<unsigned char>::const_iterator to = in.end();
 		for ( ; from!=to; ++from ) printf("%.2X", *from);
+	}
+	
+	bytes Conversion::readBytesHex()
+	{
+		std::string line;
+		getline(std::cin, line);
+		return hexstring2bytes(line);
+	}
+	
+	bytes Conversion::readBytesHexForce(const std::string &message)
+	{
+		bytes b;
+		while (b.size() == 0)
+		{
+			std::cout << message << ": ";
+			b = readBytesHex();
+		}
+		return b;
 	}
 }

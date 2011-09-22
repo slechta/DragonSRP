@@ -27,13 +27,12 @@ namespace DragonSRP
 			
 			static void printBytes(const bytes &in); // prints to stdout in hex
 			
-			// static void readBytes(unsigned int maxlen);
+			static bytes readBytesHex();
+			static bytes readBytesHexForce(const std::string &message);
 			
 			// some should be private
 			static char *mygetline(char *line, int size);
-			
-			// static unsigned char *hexscan(int maxbyteslen, int *resultlen);
-			
+						
 		private:
 			// Rather not use these directly if you dont have to, they are quite dangerous
 			static unsigned char *hextobyte(const char *hexstring, int *lenout); // rval must be free()d!!!
