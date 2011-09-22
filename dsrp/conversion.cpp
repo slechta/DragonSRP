@@ -124,7 +124,7 @@ namespace DragonSRP
 	{
 		std::vector<unsigned char>::const_iterator from = in.begin();
 		std::vector<unsigned char>::const_iterator to = in.end();
-		for ( ; from!=to; ++from ) printf("%.2X", *from);
+		for ( ; from!=to; ++from ) printf("%2.2X", *from);
 	}
 	
 	bytes Conversion::readBytesHex()
