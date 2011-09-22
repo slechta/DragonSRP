@@ -211,14 +211,7 @@ namespace Ossl
 			
 			bytes uu = hash.hash(cu);
 			OsslConversion::bytes2bignum(uu, u);
-
-
-			// ------------------------------
-			std::cout << "cu: ";
-			Conversion::printBytes(cu);
-			std::cout << std::endl;
-			// ------------------------------
-		
+			
 			// ------------------------------
 			std::cout << "u: ";
 			Conversion::printBytes(uu);
@@ -232,6 +225,12 @@ namespace Ossl
 			OsslConversion::bignum2bytes(S, SS);
 			K_out = hash.hash(SS);
 			
+			// ------------------------------
+			std::cout << "Sserver: ";
+			Conversion::printBytes(SS);
+			std::cout << std::endl;
+			// ------------------------------
+			
 			// Calculate M1 = H(H(N) XOR H(g) || H (s || A || B || K))
 			M1_out = calculateM1(username, salt, AA, B_out, K_out);
 			
@@ -240,6 +239,18 @@ namespace Ossl
 			toHashM2.insert(toHashM2.end(), M1_out.begin(), M1_out.end());
 			toHashM2.insert(toHashM2.end(), K_out.begin(), K_out.end());
 			M2_out = hash.hash(toHashM2);
+			
+			// ------------------------------
+			std::cout << "M1: ";
+			Conversion::printBytes(M1_out);
+			std::cout << std::endl;
+			// ------------------------------
+			
+			// ------------------------------
+			std::cout << "M2: ";
+			Conversion::printBytes(M2_out);
+			std::cout << std::endl;
+			// ------------------------------
 		}
 		else
 		{
@@ -280,7 +291,7 @@ namespace Ossl
 		bytes H_username = hash.hash(username);
 		bytes H_xor;
 		
-		H_xor.resize(hash.outputLen());
+		H_xor.resize(hash.outputLen(), 0);
 		for (unsigned int i = 0; i < hash.outputLen(); i++ ) H_xor[i] = H_N[i] ^ H_g[i];
 	
 		bytes toHash = H_xor;
