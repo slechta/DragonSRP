@@ -6,6 +6,8 @@
 #include "osslconversion.hpp"
 #include "dsrp/conversion.hpp"
 
+#define DSRP_OSSLMATHIMPL_DEBUG
+
 namespace DragonSRP
 {
 namespace Ossl
@@ -35,7 +37,9 @@ namespace Ossl
         bytes kk = hash.hash(both); // kk = H(N || PAD(g))
 		
         OsslConversion::bytes2bignum(kk, k);
-        Conversion::printBytes(kk);
+        #ifdef DSRP_OSSLMATHIMPL_DEBUG
+			Conversion::printBytes(kk);
+		#endif
     }
             
     OsslMathImpl::~OsslMathImpl()
@@ -47,7 +51,7 @@ namespace Ossl
     }
 
     // A = g^a mod N
-    void OsslMathImpl::calculateA(const bytes &aa, bytes &A_out)
+    bytes OsslMathImpl::calculateA(const bytes &aa)
     {
 		checkNg(); // will throw on error
         BIGNUM *a = BN_new();
@@ -56,19 +60,21 @@ namespace Ossl
                 
         OsslConversion::bytes2bignum(aa, a);
         BN_mod_exp(A, g, a, N, ctx);
-                
+        
+        bytes A_out;
         OsslConversion::bignum2bytes(A, A_out);
                 
         BN_free(a);
         BN_free(A);
         BN_free(tmp1);
+        return A_out;
     }
             
     // u = H(A || B)
     // x = H(salt || H(username || ":" || password)
     // S = (B - k*(g^x)) ^ (a + ux)
     // K = H(S)
-	void OsslMathImpl::clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &K_out, bytes &M1_out)
+	void OsslMathImpl::clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &M1_out, bytes &M2_out, bytes &K_out)
 	{   
 		checkNg(); // will throw on error
 		BIGNUM *B = BN_new();
@@ -80,11 +86,38 @@ namespace Ossl
 		BIGNUM *tmp3 = BN_new();
 		BIGNUM *S = BN_new();
 		
-		// Calculate u = H(A || B)
-		bytes AandB = AA;
-		AandB.insert(AandB.end(), BB.begin(), BB.end());
-		bytes uu = hash.hash(AandB);
+		// Calculate u = H(PAD(A) || PAD(B))
+		bytes cu;
+		
+		unsigned int len_N = BN_num_bytes(N);
+		
+		if (AA.size() < len_N) 
+		{
+			// PAD(A)
+			cu.push_back(0);
+			cu.resize(len_N - AA.size(), 0);
+		}
+		cu.insert(cu.begin(), AA.begin(), AA.end());
+		
+		if (BB.size() < len_N) 
+		{
+			// PAD(B)
+			cu.push_back(0);
+			cu.resize(len_N - BB.size(), 0);
+		}
+		cu.insert(cu.end(), BB.begin(), BB.end());
+		
+		bytes uu = hash.hash(cu);
 		OsslConversion::bytes2bignum(uu, u);
+		
+		#ifdef DSRP_OSSLMATHIMPL_DEBUG
+		// ------------------------------
+		std::cout << "u: ";
+		Conversion::printBytes(uu);
+		std::cout << std::endl;
+		// ------------------------------
+		#endif
+		
 		OsslConversion::bytes2bignum(BB, B);
 		
 		// Calculate x = HASH(salt || HASH(username || ":" || password)
@@ -97,6 +130,14 @@ namespace Ossl
 		hashTmp.insert(sup.begin(), salt.begin(), salt.end());
 		sup = hash.hash(hashTmp);
 		OsslConversion::bytes2bignum(sup, x);
+		
+		#ifdef DSRP_OSSLMATHIMPL_DEBUG
+		// ------------------------------
+		std::cout << "x: ";
+		Conversion::printBytes(sup);
+		std::cout << std::endl;
+		// ------------------------------
+		#endif
 		
 		//Calculate S
 		// SRP-6a safety check
@@ -117,6 +158,38 @@ namespace Ossl
 		
 			// Calculate M1
 			M1_out = calculateM1(username, salt, AA, BB, K_out);
+			
+			// Calculate M2 = H(A || M || K)
+			bytes toHashM2 = AA;
+			toHashM2.insert(toHashM2.end(), M1_out.begin(), M1_out.end());
+			toHashM2.insert(toHashM2.end(), K_out.begin(), K_out.end());
+			M2_out = hash.hash(toHashM2);
+			
+			#ifdef DSRP_OSSLMATHIMPL_DEBUG
+			// ------------------------------
+			std::cout << "toHashM2: ";
+			Conversion::printBytes(toHashM2);
+			std::cout << std::endl;
+			// ------------------------------
+			
+			// ------------------------------
+			std::cout << "M1: ";
+			Conversion::printBytes(M1_out);
+			std::cout << std::endl;
+			// ------------------------------
+			
+			// ------------------------------
+			std::cout << "M2: ";
+			Conversion::printBytes(M2_out);
+			std::cout << std::endl;
+			// ------------------------------
+			
+			// ------------------------------
+			std::cout << "K: ";
+			Conversion::printBytes(K_out);
+			std::cout << std::endl;
+			// ------------------------------
+			#endif
 		}
 		else
 		{
@@ -177,6 +250,7 @@ namespace Ossl
 			BN_mod_add(B, tmp1, tmp2, N, ctx);
 			OsslConversion::bignum2bytes(B, B_out);
 			
+			#ifdef DSRP_OSSLMATHIMPL_DEBUG
 			// ------------------------------
 			std::cout << "bb: ";
 			Conversion::printBytes(bb);
@@ -187,6 +261,7 @@ namespace Ossl
 			Conversion::printBytes(B_out);
 			std::cout << std::endl;
 			// ------------------------------
+			#endif
 			
 			// Calculate u = H(PAD(A) || PAD(B))
 			bytes cu;
@@ -212,11 +287,13 @@ namespace Ossl
 			bytes uu = hash.hash(cu);
 			OsslConversion::bytes2bignum(uu, u);
 			
+			#ifdef DSRP_OSSLMATHIMPL_DEBUG
 			// ------------------------------
 			std::cout << "u: ";
 			Conversion::printBytes(uu);
 			std::cout << std::endl;
 			// ------------------------------
+			#endif
 		
 			// Calculate S = (A *(v^u)) ^ b
 			BN_mod_exp(tmp1, v, u, N, ctx);
@@ -225,11 +302,13 @@ namespace Ossl
 			OsslConversion::bignum2bytes(S, SS);
 			K_out = hash.hash(SS);
 			
+			#ifdef DSRP_OSSLMATHIMPL_DEBUG
 			// ------------------------------
 			std::cout << "Sserver: ";
 			Conversion::printBytes(SS);
 			std::cout << std::endl;
 			// ------------------------------
+			#endif
 			
 			// Calculate M1 = H(H(N) XOR H(g) || H (s || A || B || K))
 			M1_out = calculateM1(username, salt, AA, B_out, K_out);
@@ -239,6 +318,13 @@ namespace Ossl
 			toHashM2.insert(toHashM2.end(), M1_out.begin(), M1_out.end());
 			toHashM2.insert(toHashM2.end(), K_out.begin(), K_out.end());
 			M2_out = hash.hash(toHashM2);
+			
+			#ifdef DSRP_OSSLMATHIMPL_DEBUG
+			// ------------------------------
+			std::cout << "toHashM2: ";
+			Conversion::printBytes(toHashM2);
+			std::cout << std::endl;
+			// ------------------------------
 			
 			// ------------------------------
 			std::cout << "M1: ";
@@ -251,6 +337,14 @@ namespace Ossl
 			Conversion::printBytes(M2_out);
 			std::cout << std::endl;
 			// ------------------------------
+			
+			// ------------------------------
+			std::cout << "K: ";
+			Conversion::printBytes(K_out);
+			std::cout << std::endl;
+			// ------------------------------
+			#endif
+			
 		}
 		else
 		{

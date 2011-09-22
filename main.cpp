@@ -18,12 +18,9 @@
 
 #include "dsrp/memorylookup.hpp"
 
-#include "ossl/osslsha256.hpp"
+#include "ossl/osslsha1.hpp"
 #include "ossl/osslmathimpl.hpp"
 #include "ossl/osslrandom.hpp"
-
-
-
 
 using namespace DragonSRP;
 using namespace DragonSRP::Ossl;
@@ -32,20 +29,35 @@ using namespace std;
 int main(int argc, char **argv)
 {	
 	try {
-		bytes qq = Conversion::readBytesHexForce("qq");
-		cout << "Result: ";
-		Conversion::printBytes(qq);
+		std::string strUsername;
+		cout << "username: ";
+		cin >> strUsername;
+
+		bytes username = Conversion::string2bytes(strUsername);
+		bytes verificator = Conversion::readBytesHexForce("verificator");
+		bytes salt = Conversion::readBytesHexForce("salt");
+		bytes A = Conversion::readBytesHexForce("A(from client)");
+
+		User u(username, verificator, salt);
 		
-		Ng ng = Ng::predefined(4096);
-		OsslSha256 hash;
+		Ng ng = Ng::predefined(1024);
+		
+		OsslSha1 hash;
 		OsslMathImpl math(hash, ng);
 		OsslRandom random;
 		MemoryLookup lookup;
 		
-		// lookup.addUser()
+		if (!lookup.userAdd(u))
+		{
+			cout << "Error: user already exists" << endl;
+		}
 		
 		SrpServer srpserver(lookup, math, random);
-		SrpVerificator ver = srpserver.getVerificator(Conversion::string2bytes("testuser"), Conversion::string2bytes("libovolne, nutno dodelat hex"));
+		
+		printf("baf4B\n");
+		SrpVerificator ver = srpserver.getVerificator(username, A);
+		
+		printf("baf4C\n");
 	}
 	catch (UserNotFoundException e)
 	{

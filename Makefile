@@ -15,6 +15,7 @@ OBJ-DSRP =  dsrp/conversionexception.o \
             dsrp/srpverificator.o \
             dsrp/srpserver.o \
             dsrp/usernotfoundexception.o \
+            dsrp/srpclientauthenticator.o \
             dsrp/memorylookup.o
 
 OBJ-OSSL =  ossl/osslsha1.o \
