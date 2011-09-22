@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include "osslconversion.hpp"
 
 namespace DragonSRP
@@ -20,5 +21,13 @@ namespace DragonSRP
 		out.resize(len); // important, otherwise SIGSEGV
 		copy(arr, arr + len, out.begin());
 		free(arr);
+	}
+	
+	void OsslConversion::printBignum(const BIGNUM *in)
+	{
+		char *str = BN_bn2hex(in);
+		std::cout << str << std::endl;
+		//OPENSSL_free(str);
+		free(str); // ugly!
 	}
 }

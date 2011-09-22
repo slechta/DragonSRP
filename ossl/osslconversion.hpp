@@ -17,6 +17,8 @@ namespace DragonSRP
 		public:
 			static void bytes2bignum(const bytes &in, BIGNUM *out);
 			static void bignum2bytes(BIGNUM *in, bytes& out);
+			
+			static void printBignum(const BIGNUM *in);
 	};
 }
 
