@@ -20,6 +20,10 @@ namespace DragonSRP
 	
 	bytes SrpClient::getM1(bytes salt, bytes B, SrpClientAuthenticator &sca)
 	{
-		
+		bytes M1, M2, K;
+		math.clientChallange(salt, sca.a, sca.A, B, sca.username, sca.password, M1, M2, K);
+		sca.M2_calculated = M2;
+		sca.K = K;
+		return M1;
 	}
 }

@@ -30,6 +30,9 @@ namespace DragonSRP
 			static bytes readBytesHex();
 			static bytes readBytesHexForce(const std::string &message);
 			
+			static void append(bytes &ret, const bytes &add);
+			static void prepend(bytes &ret, const bytes &add);
+			
 			// some should be private
 			static char *mygetline(char *line, int size);
 						

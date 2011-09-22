@@ -53,6 +53,14 @@ namespace Ossl
     // A = g^a mod N
     bytes OsslMathImpl::calculateA(const bytes &aa)
     {
+		#ifdef DSRP_OSSLMATHIMPL_DEBUG
+		// ------------------------------
+		std::cout << "a: ";
+		Conversion::printBytes(aa);
+		std::cout << std::endl;
+		// ------------------------------
+		#endif
+		
 		checkNg(); // will throw on error
         BIGNUM *a = BN_new();
         BIGNUM *A = BN_new();
@@ -67,6 +75,15 @@ namespace Ossl
         BN_free(a);
         BN_free(A);
         BN_free(tmp1);
+        
+        #ifdef DSRP_OSSLMATHIMPL_DEBUG
+		// ------------------------------
+		std::cout << "A: ";
+		Conversion::printBytes(A_out);
+		std::cout << std::endl;
+		// ------------------------------
+		#endif
+        
         return A_out;
     }
             
@@ -74,7 +91,7 @@ namespace Ossl
     // x = H(salt || H(username || ":" || password)
     // S = (B - k*(g^x)) ^ (a + ux)
     // K = H(S)
-	void OsslMathImpl::clientChallenge(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &M1_out, bytes &M2_out, bytes &K_out)
+	void OsslMathImpl::clientChallange(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &M1_out, bytes &M2_out, bytes &K_out)
 	{   
 		checkNg(); // will throw on error
 		BIGNUM *B = BN_new();
@@ -121,20 +138,18 @@ namespace Ossl
 		OsslConversion::bytes2bignum(BB, B);
 		
 		// Calculate x = HASH(salt || HASH(username || ":" || password)
-		unsigned char colon = ':';
-		bytes sup = salt;
-		sup.insert(sup.end(), username.begin(), username.end());
-		sup.insert(sup.end(), &colon, (&colon) + 1);
-		sup.insert(sup.end(), password.begin(), password.end());
-		bytes hashTmp = hash.hash(sup);
-		hashTmp.insert(sup.begin(), salt.begin(), salt.end());
-		sup = hash.hash(hashTmp);
-		OsslConversion::bytes2bignum(sup, x);
+		bytes ucp = username;
+		ucp.push_back(58); // colon :
+		Conversion::append(ucp, password);
+		bytes hashUcp = hash.hash(ucp);
+		Conversion::prepend(hashUcp, salt);
+		bytes xx = hash.hash(hashUcp);
+		OsslConversion::bytes2bignum(xx, x);
 		
 		#ifdef DSRP_OSSLMATHIMPL_DEBUG
 		// ------------------------------
 		std::cout << "x: ";
-		Conversion::printBytes(sup);
+		Conversion::printBytes(xx);
 		std::cout << std::endl;
 		// ------------------------------
 		#endif
@@ -161,11 +176,17 @@ namespace Ossl
 			
 			// Calculate M2 = H(A || M || K)
 			bytes toHashM2 = AA;
-			toHashM2.insert(toHashM2.end(), M1_out.begin(), M1_out.end());
-			toHashM2.insert(toHashM2.end(), K_out.begin(), K_out.end());
+			Conversion::append(toHashM2, M1_out);
+			Conversion::append(toHashM2, K_out);
 			M2_out = hash.hash(toHashM2);
 			
 			#ifdef DSRP_OSSLMATHIMPL_DEBUG
+			// ------------------------------
+			std::cout << "S: ";
+			Conversion::printBytes(SS);
+			std::cout << std::endl;
+			// ------------------------------
+			
 			// ------------------------------
 			std::cout << "toHashM2: ";
 			Conversion::printBytes(toHashM2);
@@ -274,7 +295,7 @@ namespace Ossl
 				cu.push_back(0);
 				cu.resize(len_N - AA.size(), 0);
 			}
-			cu.insert(cu.begin(), AA.begin(), AA.end());
+			Conversion::append(cu, AA);
 			
 			if (B_out.size() < len_N) 
 			{
@@ -282,7 +303,7 @@ namespace Ossl
 				cu.push_back(0);
 				cu.resize(len_N - B_out.size(), 0);
 			}
-			cu.insert(cu.end(), B_out.begin(), B_out.end());
+			Conversion::append(cu, B_out);
 			
 			bytes uu = hash.hash(cu);
 			OsslConversion::bytes2bignum(uu, u);
@@ -315,8 +336,8 @@ namespace Ossl
 			
 			// Calculate M2 = H(A || M || K)
 			bytes toHashM2 = AA;
-			toHashM2.insert(toHashM2.end(), M1_out.begin(), M1_out.end());
-			toHashM2.insert(toHashM2.end(), K_out.begin(), K_out.end());
+			Conversion::append(toHashM2, M1_out);
+			Conversion::append(toHashM2, K_out);
 			M2_out = hash.hash(toHashM2);
 			
 			#ifdef DSRP_OSSLMATHIMPL_DEBUG
@@ -389,12 +410,11 @@ namespace Ossl
 		for (unsigned int i = 0; i < hash.outputLen(); i++ ) H_xor[i] = H_N[i] ^ H_g[i];
 	
 		bytes toHash = H_xor;
-		toHash.insert(toHash.end(), H_username.begin(), H_username.end());
-		toHash.insert(toHash.end(), s.begin(), s.end());
-		toHash.insert(toHash.end(), A.begin(), A.end());
-		toHash.insert(toHash.end(), B.begin(), B.end());
-		toHash.insert(toHash.end(), K.begin(), K.end());
-		
+		Conversion::append(toHash, H_username);
+		Conversion::append(toHash, s);
+		Conversion::append(toHash, A);
+		Conversion::append(toHash, B);
+		Conversion::append(toHash, K);		
 		return hash.hash(toHash);
 	}
 	

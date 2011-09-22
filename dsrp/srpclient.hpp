@@ -12,24 +12,16 @@
 namespace DragonSRP
 {	
 	class SrpClient
-	{
-		
-		
+	{		
 		public:
 			SrpClient(MathInterface &mathInterface, RandomInterface &randomInterface);
-			
 			SrpClientAuthenticator getAuthenticator(bytes username, bytes password);
 			bytes getM1(bytes salt, bytes B, SrpClientAuthenticator &sca);
-			
-			
+
 		private:
 			MathInterface &math;
-			RandomInterface &random;
-		
+			RandomInterface &random;	
 	};
-	
-	
 }
-
 
 #endif

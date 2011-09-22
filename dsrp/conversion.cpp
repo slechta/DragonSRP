@@ -146,4 +146,18 @@ namespace DragonSRP
 		
 		return b;
 	}
+	
+	
+	void Conversion::append(bytes &ret, const bytes &add)
+	{
+		ret.reserve(ret.size() + add.size());
+		ret.insert(ret.end(), add.begin(), add.end());
+	}
+	
+	void Conversion::prepend(bytes &ret, const bytes &add)
+	{
+		ret.reserve(ret.size() + add.size());
+		ret.insert(ret.begin(), add.begin(), add.end());
+	}
+	
 }
