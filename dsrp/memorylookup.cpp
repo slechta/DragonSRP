@@ -12,7 +12,6 @@ namespace DragonSRP
 	
 	User MemoryLookup::getByName(bytes username)
 	{
-		printf("ble ble ble \n");
 		std::map<bytes, User>::iterator iter;
 		iter = db.find(username);
 		if (iter == db.end()) throw UserNotFoundException("User not found.", username);
