@@ -14,7 +14,8 @@ OBJ-DSRP =  dsrp/conversionexception.o \
             dsrp/randominterface.o \
             dsrp/srpverificator.o \
             dsrp/srpserver.o \
-            dsrp/usernotfoundexception.o
+            dsrp/usernotfoundexception.o \
+            dsrp/memorylookup.o
 
 OBJ-OSSL =  ossl/osslsha256.o \
             ossl/osslrandom.o \

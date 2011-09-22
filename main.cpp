@@ -14,24 +14,23 @@
 #include "dsrp/dsrpexception.hpp"
 #include "dsrp/conversionexception.hpp"
 #include "dsrp/usernotfoundexception.hpp"
+#include "dsrp/conversion.hpp"
 
-/*
+#include "dsrp/memorylookup.hpp"
+
 #include "ossl/osslsha256.hpp"
 #include "ossl/osslmathimpl.hpp"
 #include "ossl/osslrandom.hpp"
-#include "ossl/conversion.hpp"
-#include "ossl/memorylookup.hpp"
-*/
+
 
 
 
 using namespace DragonSRP;
-// using namespace DragonSRP::Ossl;
+using namespace DragonSRP::Ossl;
 using namespace std;
 
 int main(int argc, char **argv)
 {	
-	/*
 	try {
 		bytes qq = Conversion::readBytesHexForce("qq");
 		cout << "Result: ";
@@ -60,7 +59,7 @@ int main(int argc, char **argv)
 	{
 		cout << "unknown exception occures" << endl;
 	}
-	*/
+	
 	
 	printf("baf5\n");
 	
