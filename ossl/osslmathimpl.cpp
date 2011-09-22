@@ -28,14 +28,14 @@ namespace Ossl
         
         bytes both = NN;
         
-        // PAD(g)
-        both.push_back(0);
-        both.resize(2 * NN.size() - gg.size());
+        both.push_back(0); // PAD(g); assuming len(g) < len(N)
+        both.resize(2 * NN.size() - gg.size(), 0);
         
         both.insert(both.end(), gg.begin(), gg.end());
         bytes kk = hash.hash(both); // kk = H(N || PAD(g))
 		
         OsslConversion::bytes2bignum(kk, k);
+        Conversion::printBytes(kk);
     }
             
     OsslMathImpl::~OsslMathImpl()
@@ -176,15 +176,54 @@ namespace Ossl
 			BN_mod_exp(tmp2, g, b, N, ctx);
 			BN_mod_add(B, tmp1, tmp2, N, ctx);
 			OsslConversion::bignum2bytes(B, B_out);
-		
-			// Calculate u = H(A || B)
-			bytes AABB = AA;
-			bytes BB;
-			OsslConversion::bignum2bytes(B, BB);
 			
-			AABB.insert(AABB.end(), BB.begin(), BB.end());
-			bytes uu = hash.hash(AABB);
+			// ------------------------------
+			std::cout << "bb: ";
+			Conversion::printBytes(bb);
+			std::cout << std::endl;
+			// ------------------------------
+			// ------------------------------
+			std::cout << "B_out: ";
+			Conversion::printBytes(B_out);
+			std::cout << std::endl;
+			// ------------------------------
+			
+			// Calculate u = H(PAD(A) || PAD(B))
+			bytes cu;
+			
+			unsigned int len_N = BN_num_bytes(N);
+			
+			if (AA.size() < len_N) 
+			{
+				// PAD(A)
+				cu.push_back(0);
+				cu.resize(len_N - AA.size(), 0);
+			}
+			cu.insert(cu.begin(), AA.begin(), AA.end());
+			
+			if (B_out.size() < len_N) 
+			{
+				// PAD(B)
+				cu.push_back(0);
+				cu.resize(len_N - B_out.size(), 0);
+			}
+			cu.insert(cu.end(), B_out.begin(), B_out.end());
+			
+			bytes uu = hash.hash(cu);
 			OsslConversion::bytes2bignum(uu, u);
+
+
+			// ------------------------------
+			std::cout << "cu: ";
+			Conversion::printBytes(cu);
+			std::cout << std::endl;
+			// ------------------------------
+		
+			// ------------------------------
+			std::cout << "u: ";
+			Conversion::printBytes(uu);
+			std::cout << std::endl;
+			// ------------------------------
 		
 			// Calculate S = (A *(v^u)) ^ b
 			BN_mod_exp(tmp1, v, u, N, ctx);
@@ -194,7 +233,7 @@ namespace Ossl
 			K_out = hash.hash(SS);
 			
 			// Calculate M1 = H(H(N) XOR H(g) || H (s || A || B || K))
-			M1_out = calculateM1(username, salt, AA, BB, K_out);
+			M1_out = calculateM1(username, salt, AA, B_out, K_out);
 			
 			// Calculate M2 = H(A || M || K)
 			bytes toHashM2 = AA;
@@ -242,7 +281,7 @@ namespace Ossl
 		bytes H_xor;
 		
 		H_xor.resize(hash.outputLen());
-		for (int i = 0; i < hash.outputLen(); i++ ) H_xor[i] = H_N[i] ^ H_g[i];
+		for (unsigned int i = 0; i < hash.outputLen(); i++ ) H_xor[i] = H_N[i] ^ H_g[i];
 	
 		bytes toHash = H_xor;
 		toHash.insert(toHash.end(), H_username.begin(), H_username.end());
