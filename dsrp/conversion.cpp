@@ -137,11 +137,13 @@ namespace DragonSRP
 	bytes Conversion::readBytesHexForce(const std::string &message)
 	{
 		bytes b;
-		while (b.size() == 0)
+		do
 		{
 			std::cout << message << ": ";
 			b = readBytesHex();
 		}
+		while (b.size() == 0);
+		
 		return b;
 	}
 }
