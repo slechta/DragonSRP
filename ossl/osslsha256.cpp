@@ -26,7 +26,7 @@ namespace DragonSRP
 		SHA256_Update(&context, arr, len);
 		SHA256_Final(md, &context);
 		
-		bytes ret = Conversion::array2bytes(arr, SHA256_DIGEST_LENGTH);
+		bytes ret = Conversion::array2bytes(md, SHA256_DIGEST_LENGTH);
 		
 		free(arr);
 		return ret;
