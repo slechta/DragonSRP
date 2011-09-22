@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <openssl/rand.h>
+
+#include "dsrp/conversion.hpp"
 #include "osslrandom.hpp"
 
 namespace DragonSRP
@@ -30,7 +32,7 @@ namespace DragonSRP
 		if (!initOk) throw DsrpException("Could not get random number - PRNG not initialized");
 		if (lenBytes <= 0) throw DsrpException("Could not get random number - size is zero or negative");
 		unsigned char *r = (unsigned char *) malloc(lenBytes);
-		if (r == NULL) throw DsrpException("Could not get random number - malloc() failed");;
+		if (r == NULL) throw DsrpException("Could not get random number - malloc() failed");
 		int rval = RAND_bytes(r, lenBytes);
 		
 		if (rval != 1)
@@ -39,8 +41,7 @@ namespace DragonSRP
 			throw DsrpException("Could not get random number");
 		}
 		
-		bytes out;
-		copy(r, r + lenBytes, out.begin());
+		bytes out = Conversion::array2bytes(r, lenBytes);
 		free(r);
 		return out;
 	}
