@@ -2,9 +2,9 @@
 #ifndef DSRP_OSSLRANDOM_HPP
 #define DSRP_OSSLRANDOM_HPP
 
-#include "common.hpp"
-#include "randominterface.hpp"
-#include "dsrpexception.hpp"
+#include "dsrp/common.hpp"
+#include "dsrp/randominterface.hpp"
+#include "dsrp/dsrpexception.hpp"
 
 namespace DragonSRP
 {

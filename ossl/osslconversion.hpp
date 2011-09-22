@@ -7,8 +7,8 @@
 #include <stdio.h>
 #include <string>
 #include <openssl/bn.h>
-#include "common.hpp"
-#include "conversionexception.hpp"
+#include "dsrp/common.hpp"
+#include "dsrp/conversionexception.hpp"
 
 namespace DragonSRP
 {

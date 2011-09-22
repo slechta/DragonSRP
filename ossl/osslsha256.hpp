@@ -2,8 +2,8 @@
 #ifndef DSRP_OSSL_SHA256_HPP
 #define DSRP_OSSL_SHA256_HPP
 
-#include "common.hpp"
-#include "hashinterface.hpp"
+#include "dsrp/common.hpp"
+#include "dsrp/hashinterface.hpp"
 
 namespace DragonSRP
 {

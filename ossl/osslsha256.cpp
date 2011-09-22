@@ -5,7 +5,7 @@
 #include <openssl/sha.h>
 
 #include "osslsha256.hpp"
-#include "conversion.hpp"
+#include "dsrp/conversion.hpp"
 
 namespace DragonSRP
 {

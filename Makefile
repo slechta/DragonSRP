@@ -1,6 +1,6 @@
 
 CC = g++
-CFLAGS = -Wall -ggdb -std=c++0x -I./dsrp
+CFLAGS = -Wall -ggdb -std=c++0x -I.
 
 OBJ-DSRP =  dsrp/conversionexception.o \
             dsrp/conversion.o \

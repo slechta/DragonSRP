@@ -7,12 +7,12 @@
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 
-#include "common.hpp"
-#include "mathinterface.hpp"
-#include "ng.hpp"
-#include "conversion.hpp"
+#include "dsrp/common.hpp"
+#include "dsrp/mathinterface.hpp"
+#include "dsrp/ng.hpp"
+#include "dsrp/conversion.hpp"
 
-#include "dsrpexception.hpp"
+#include "dsrp/dsrpexception.hpp"
 
 namespace DragonSRP
 {

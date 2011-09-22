@@ -5,22 +5,22 @@
 #include <stdlib.h>
 #include <string>
 
-#include "srpserver.hpp"
-#include "srpverificator.hpp"
-#include "srpclient.hpp"
-#include "user.hpp"
-#include "ng.hpp"
+#include "dsrp/srpserver.hpp"
+#include "dsrp/srpverificator.hpp"
+#include "dsrp/srpclient.hpp"
+#include "dsrp/user.hpp"
+#include "dsrp/ng.hpp"
 
-#include "dsrpexception.hpp"
-#include "conversionexception.hpp"
-#include "usernotfoundexception.hpp"
+#include "dsrp/dsrpexception.hpp"
+#include "dsrp/conversionexception.hpp"
+#include "dsrp/usernotfoundexception.hpp"
 
 /*
-#include "osslsha256.hpp"
-#include "osslmathimpl.hpp"
-#include "osslrandom.hpp"
-#include "conversion.hpp"
-#include "memorylookup.hpp"
+#include "ossl/osslsha256.hpp"
+#include "ossl/osslmathimpl.hpp"
+#include "ossl/osslrandom.hpp"
+#include "ossl/conversion.hpp"
+#include "ossl/memorylookup.hpp"
 */
 
 
