@@ -1,8 +1,10 @@
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include "osslmathimpl.hpp"
 #include "osslconversion.hpp"
+#include "dsrp/conversion.hpp"
 
 namespace DragonSRP
 {
@@ -16,18 +18,23 @@ namespace Ossl
         k(BN_new()),
         ctx(BN_CTX_new())
     {
-        // checkNg()????
-        // set that we set Ng as bool
+        // needs FIX: check primality of N and g generator???!!!!!!!!!!!!!
         
-        bytes NN = ngVal.getN(); // could also use ng from base class
+        bytes NN = ngVal.getN();
         bytes gg = ngVal.getg();
         
         OsslConversion::bytes2bignum(NN, N);
         OsslConversion::bytes2bignum(gg, g);
         
         bytes both = NN;
+        
+        // PAD(g)
+        both.push_back(0);
+        both.resize(2 * NN.size() - gg.size());
+        
         both.insert(both.end(), gg.begin(), gg.end());
-        bytes kk = hash.hash(both);
+        bytes kk = hash.hash(both); // kk = H(N || PAD(g))
+		
         OsslConversion::bytes2bignum(kk, k);
     }
             
@@ -151,6 +158,7 @@ namespace Ossl
 		BIGNUM *tmp1 = BN_new();
 		BIGNUM *tmp2 = BN_new();
 
+		OsslConversion::bytes2bignum(AA, A);
 		OsslConversion::bytes2bignum(bb, b);
 		OsslConversion::bytes2bignum(verificator, v);
 		
