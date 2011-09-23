@@ -1,0 +1,23 @@
+******************************
+* LIST OF DragonSRP AUTHORS  *
+******************************
+
+Main DragonSRP Developer:
+Pavel Slechta
+<slechta@email.cz>
+Czech Republic
+
+Special thanks to:
+
+To creator's of Standford Secure Remote Protocol.
+http://srp.stanford.edu/
+
+OpenSSL Team:
+This product includes software developed by the OpenSSL Project 
+for use in the OpenSSL Toolkit. (http://www.openssl.org/)
+
+This product includes cryptographic software 
+written by Eric Young (eay@cryptsoft.com)
+
+This product includes software written 
+by Tim Hudson (tjh@cryptsoft.com)
