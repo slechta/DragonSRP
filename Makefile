@@ -25,12 +25,12 @@ OBJ-OSSL =  ossl/osslsha1.o \
             ossl/osslmathimpl.o \
             ossl/osslconversion.o
 
-OBJ-TEST =  main.o
-BIN-TEST =  test
+OBJ-APPS =  apps/server_test.o \
+            apps/client_test.o
 
 LIBS-OSSL = -lssl
 
-all: dsrp ossl test
+all: dsrp ossl apps
 
 #build the object files for dsrp
 dsrp: $(OBJ-DSRP)
@@ -38,19 +38,18 @@ dsrp: $(OBJ-DSRP)
 #to build ossl we first need to have build dsrp
 ossl: dsrp $(OBJ-OSSL)
 
-#build the test
-test: dsrp ossl $(OBJ-TEST)
-	$(CC) $(OBJ-TEST) $(OBJ-DSRP) $(OBJ-OSSL) -o $(BIN-TEST) $(LIBS-OSSL)
+#build the apps
+apps: dsrp ossl $(OBJ-APPS)
+	$(CC) apps/server_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/server_test $(LIBS-OSSL)
+	$(CC) apps/client_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/client_test $(LIBS-OSSL)
 
 #tells how to make an *.o object file from an *.cpp file
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) $< -o $@
 
-#$(BIN): $(OBJ)
-#	$(CC) $^ -o $@ $(LIBS)
-
 clean::
 	rm -f *.o
 	rm -f dsrp/*.o
 	rm -f ossl/*.o
-#	rm -f $(BIN)
+	rm -f apps/server_test
+	rm -f apps/client_test
