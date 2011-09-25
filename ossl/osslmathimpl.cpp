@@ -85,7 +85,11 @@ namespace Ossl
 		
         OsslConversion::bytes2bignum(kk, k);
         #ifdef DSRP_OSSLMATHIMPL_DEBUG
-			Conversion::printBytes(kk);
+		// ------------------------------
+		std::cout << "k: ";
+		Conversion::printBytes(kk);
+		std::cout << std::endl;
+		// ------------------------------
 		#endif
     }
             
@@ -470,6 +474,34 @@ namespace Ossl
 		if (BN_is_zero(N)) throw DsrpException("OsslMathImpl: N was not set");
 		if (BN_is_zero(g)) throw DsrpException("OsslMathImpl: g was not set");
 		if (BN_is_zero(k)) throw DsrpException("OsslMathImpl: k was not set");
+	}
+ 
+	// throws
+    bytes OsslMathImpl::calculateVerificator(const bytes &username, const bytes &password, const bytes &salt)
+    {
+		if (username.size() == 0 || password.size() == 0 || salt.size() == 0) throw DsrpException("Create verificator null parameter.");
+		
+		// Calculate x = HASH(salt || HASH(username || ":" || password)
+		bytes ucp = username;
+		ucp.push_back(58); // colon :
+		Conversion::append(ucp, password);
+		bytes hashUcp = hash.hash(ucp);
+		Conversion::prepend(hashUcp, salt);
+		bytes xx = hash.hash(hashUcp);
+		
+		// Calculate v = g ^ x;
+		BIGNUM *x = BN_new();
+		BIGNUM *v = BN_new();
+		
+		OsslConversion::bytes2bignum(xx, x);
+		BN_mod_exp(v, g, x, N, ctx);
+		
+		bytes vv;
+		OsslConversion::bignum2bytes(v, vv);
+		BN_free(x);
+		BN_free(v);
+		
+		return vv;
 	}
  
 // Namespace endings   
