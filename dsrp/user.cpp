@@ -46,11 +46,12 @@ namespace DragonSRP
 	}
 	*/
 	
-	User::User(bytes usrname, bytes verif, bytes sal)
+	User::User(bytes usrname, bytes verif, bytes sal) :
+		username(usrname),
+		verificator(verif),
+		salt(sal)
 	{
-		username = usrname;
-		verificator = verif;
-		salt = salt;
+		
 	}
 	
 	User::~User()
