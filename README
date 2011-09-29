@@ -8,7 +8,10 @@ by inerhiting UserLookup interface.
 
 Or you can change the hash function.
 
-Code can be easily changed to used different mathemathical library instead of OpenSSL BN_functions()
+The OpenSSL math functions can be easily exchanged 
+by creating a new class implementing the MathInterface.
+(You do NOT need to change the actual code.)
+
 The folder dsrp can be compiled without the -lssl flag.
 
 Note1: Examples are in the app folder.
@@ -16,6 +19,8 @@ Note2: This project is currently in development, although the examples are worki
        this means that some things are not yet tested.
 Note3: I was lazy to change the name and email first time when creating git repository, so
        there is "draco <draco@allstar.pilsfree.czf>" in git tree which is my hostname.
+
+Note4: For unknown reason sometimes is needed to run "make" TWICE!!!
 
 Thanks for reading.
 Pavel Slechta <slechta@email.cz>
