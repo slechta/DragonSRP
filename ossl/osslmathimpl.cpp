@@ -225,6 +225,12 @@ namespace Ossl
 			// Calculate M1
 			M1_out = calculateM1(username, salt, AA, BB, K_out);
 			
+			// ------------------------------
+			std::cout << "M1: ";
+			Conversion::printBytes(M1_out);
+			std::cout << std::endl;
+			// ------------------------------
+			
 			// Calculate M2 = H(A || M || K)
 			bytes toHashM2 = AA;
 			Conversion::append(toHashM2, M1_out);
@@ -243,13 +249,7 @@ namespace Ossl
 			Conversion::printBytes(toHashM2);
 			std::cout << std::endl;
 			// ------------------------------
-			
-			// ------------------------------
-			std::cout << "M1: ";
-			Conversion::printBytes(M1_out);
-			std::cout << std::endl;
-			// ------------------------------
-			
+
 			// ------------------------------
 			std::cout << "M2: ";
 			Conversion::printBytes(M2_out);
@@ -385,6 +385,12 @@ namespace Ossl
 			// Calculate M1 = H(H(N) XOR H(g) || H (s || A || B || K))
 			M1_out = calculateM1(username, salt, AA, B_out, K_out);
 			
+			// ------------------------------
+			std::cout << "M1: ";
+			Conversion::printBytes(M1_out);
+			std::cout << std::endl;
+			// ------------------------------
+			
 			// Calculate M2 = H(A || M || K)
 			bytes toHashM2 = AA;
 			Conversion::append(toHashM2, M1_out);
@@ -395,12 +401,6 @@ namespace Ossl
 			// ------------------------------
 			std::cout << "toHashM2: ";
 			Conversion::printBytes(toHashM2);
-			std::cout << std::endl;
-			// ------------------------------
-			
-			// ------------------------------
-			std::cout << "M1: ";
-			Conversion::printBytes(M1_out);
 			std::cout << std::endl;
 			// ------------------------------
 			
@@ -445,6 +445,39 @@ namespace Ossl
 	// M = H(H(N) XOR H(g) | H(username) | s | A | B | K)
 	bytes OsslMathImpl::calculateM1(const bytes &username, const bytes &s, const bytes &A, const bytes &B, const bytes &K)
 	{   
+		
+		#ifdef DSRP_OSSLMATHIMPL_DEBUG
+		// ------------------------------
+		std::cout << "M1>>username: ";
+		Conversion::printBytes(username);
+		std::cout << std::endl;
+		// ------------------------------
+		
+		// ------------------------------
+		std::cout << "M1>>salt(s): ";
+		Conversion::printBytes(s);
+		std::cout << std::endl;
+		// ------------------------------
+		
+		// ------------------------------
+		std::cout << "M1>>A: ";
+		Conversion::printBytes(A);
+		std::cout << std::endl;
+		// ------------------------------
+		
+		// ------------------------------
+		std::cout << "M1>>B: ";
+		Conversion::printBytes(B);
+		std::cout << std::endl;
+		// ------------------------------
+		
+		// ------------------------------
+		std::cout << "M1>>K: ";
+		Conversion::printBytes(K);
+		std::cout << std::endl;
+		// ------------------------------
+		#endif
+		
 		bytes NN;
 		bytes gg;
 		
