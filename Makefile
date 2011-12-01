@@ -1,6 +1,6 @@
 
 CC = g++
-CFLAGS = -Wall -ggdb -std=c++0x -I.
+CFLAGS = -Wall -ggdb -std=c++0x -I. -O3
 
 OBJ-DSRP =  dsrp/conversionexception.o \
             dsrp/conversion.o \
@@ -56,3 +56,4 @@ clean::
 	rm -f apps/server_test
 	rm -f apps/client_test
 	rm -f apps/create_user
+	rm -f apps/*.o
