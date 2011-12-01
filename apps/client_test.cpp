@@ -33,13 +33,16 @@ int main(int argc, char **argv)
 		
 		SrpClient srpclient(math, random);
 		
-		std::string strUsername;
+		// ask user for credentials
+		string strUsername;
 		cout << "username: ";
 		cin >> strUsername;
+		cin.ignore();
 		
-		std::string strPassword;
+		string strPassword;
 		cout << "password: ";
 		cin >> strPassword;
+		cin.ignore();
 		
 		bytes username = Conversion::string2bytes(strUsername);
 		bytes password = Conversion::string2bytes(strPassword);
@@ -48,19 +51,34 @@ int main(int argc, char **argv)
 		
 		// send username and A to server
 		bytes A = sca.getA();
+		cout << "A (send to server): ";
+		Conversion::printBytes(A);
+		cout << endl;
 		
 		// receive salt and B from server
-		bytes B = Conversion::readBytesHexForce("B(from server)");
 		bytes salt = Conversion::readBytesHexForce("salt(from server)");
+		bytes B = Conversion::readBytesHexForce("B(from server)");
 		
 		// send M1 to server
 		bytes M1 = srpclient.getM1(salt, B, sca);
+		cout << "M1(send to server): ";
+		Conversion::printBytes(M1);
+		cout << endl;
 		
 		// receive M2 from server (or nothing if auth on server side not successful!)
 		bytes M2 = Conversion::readBytesHexForce("M2(from server)");
 		// if M2 matches we get K
-		bytes K = sca.getSessionKey(M2);
-				
+		bytes K = sca.getSessionKey(M2); // this throws exception on bad password
+		
+		// display shared secret
+		cout << "shared secret session key is: ";
+		Conversion::printBytes(K);
+		cout << endl;
+		
+		// if we get here, no exception was thrown
+		// if auth fails DsrpException is thrown
+		cout << "authentification successful" << endl;
+		return 0;		
 	}
 	catch (UserNotFoundException e)
 	{
@@ -74,7 +92,6 @@ int main(int argc, char **argv)
 	{
 		cout << "unknown exception occured" << endl;
 	}
-	printf("end\n");
-	return 0;
+	return -1;
 }
 

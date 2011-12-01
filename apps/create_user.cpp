@@ -29,6 +29,7 @@ int main(int argc, char **argv)
 		OsslSha1 hash;
 		OsslRandom random;
 		Ng ng = Ng::predefined(1024);
+		cout << "INFO: using RFC5054 Appendix A 1024 bit N,g pair" << endl;
 		OsslMathImpl math(hash, ng);
 		
 		SrpClient srpclient(math, random);
@@ -36,10 +37,12 @@ int main(int argc, char **argv)
 		string strUsername;
 		cout << "username: ";
 		cin >> strUsername;
+		cin.ignore();
 		
 		string strPassword;
 		cout << "password: ";
 		cin >> strPassword;
+		cin.ignore();
 		
 		bytes username = Conversion::string2bytes(strUsername);
 		bytes password = Conversion::string2bytes(strPassword);
@@ -56,7 +59,9 @@ int main(int argc, char **argv)
 		cout << endl << "verificator: ";
 		Conversion::printBytes(verificator);
 		cout << endl;
-						
+	
+        cout << "ok - you can now use these parameters in server_test program" << endl;
+		return 0;			
 	}
 	catch (DsrpException e)
 	{
@@ -66,8 +71,8 @@ int main(int argc, char **argv)
 	{
 		cout << "unknown exception occured" << endl;
 	}
-	printf("end\n");
-	return 0;
+	
+	return -1;
 }
 
 

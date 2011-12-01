@@ -165,19 +165,19 @@ namespace DragonSRP
 	bytes Conversion::readBytesHex()
 	{
 		std::string line;
-		getline(std::cin, line);
+		std::getline(std::cin, line);
 		return hexstring2bytes(line);
 	}
 	
 	bytes Conversion::readBytesHexForce(const std::string &message)
 	{
 		bytes b;
-		do
+		
+		do 
 		{
 			std::cout << message << ": ";
 			b = readBytesHex();
-		}
-		while (b.size() == 0);
+		} while (b.size() == 0);
 		
 		return b;
 	}
