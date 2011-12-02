@@ -52,7 +52,12 @@ namespace DragonSRP
 			SrpClient(MathInterface &mathInterface, RandomInterface &randomInterface);
 			SrpClientAuthenticator getAuthenticator(bytes username, bytes password);
 			bytes getM1(bytes salt, bytes B, SrpClientAuthenticator &sca);
-
+	
+			#ifdef DSRP_DANGEROUS_TESTING
+				// injects custom a; used for testing rfc vectors
+				SrpClientAuthenticator getAuthenticator(bytes username, bytes password, bytes a);
+			#endif
+			
 		private:
 			MathInterface &math;
 			RandomInterface &random;	

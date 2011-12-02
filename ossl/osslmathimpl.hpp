@@ -75,6 +75,16 @@ namespace Ossl
 			void clientChallange(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &M1_out, bytes &M2_out, bytes &K_out);
 			void serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &B_out, bytes &M1_out, bytes &M2_out, bytes &K_out);
 			bytes calculateVerificator(const bytes &username, const bytes &password, const bytes &salt);
+			
+			#ifdef DSRP_DANGEROUS_TESTING
+				bytes S_client_premaster_secret;
+				bytes S_server_premaster_secret;
+				bytes u_server;
+				bytes k_math;
+				bytes x_client;
+				bytes x_vgen;
+			#endif
+			
 		private:
 			bytes calculateM1(const bytes &username, const bytes &s, const bytes &A, const bytes &B, const bytes &K);
 			void checkNg();

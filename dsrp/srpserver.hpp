@@ -57,6 +57,10 @@ namespace DragonSRP
 			SrpServer(LookupInterface &lookupInterface, MathInterface &mathInterface, RandomInterface &randomInterface);
 			SrpVerificator getVerificator(const bytes &username, const bytes &AA);
 			
+			#ifdef DSRP_DANGEROUS_TESTING
+				// injects custom b; used for testing rfc vectors
+				SrpVerificator getVerificator(const bytes &username, const bytes &AA, const bytes &b);
+			#endif
 			
 		private:
 			LookupInterface &lookup;

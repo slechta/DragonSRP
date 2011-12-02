@@ -52,6 +52,16 @@ namespace DragonSRP
 		return SrpClientAuthenticator(username, password, a, A);
 	}
 	
+	#ifdef DSRP_DANGEROUS_TESTING
+		// injects custom a; used for testing rfc vectors
+		SrpClientAuthenticator SrpClient::getAuthenticator(bytes username, bytes password, bytes a)
+		{
+			
+			bytes A = math.calculateA(a);
+			return SrpClientAuthenticator(username, password, a, A);
+		}
+	#endif
+	
 	bytes SrpClient::getM1(bytes salt, bytes B, SrpClientAuthenticator &sca)
 	{
 		bytes M1, M2, K;
