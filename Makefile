@@ -27,7 +27,8 @@ OBJ-OSSL =  ossl/osslsha1.o \
 
 OBJ-APPS =  apps/server_test.o \
             apps/client_test.o \
-            apps/create_user.o
+            apps/create_user.o \
+            apps/benchmark.o
 
 LIBS-OSSL = -lssl
 
@@ -44,6 +45,7 @@ apps: dsrp ossl $(OBJ-APPS)
 	$(CC) apps/server_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/server_test $(LIBS-OSSL)
 	$(CC) apps/client_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/client_test $(LIBS-OSSL)
 	$(CC) apps/create_user.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/create_user $(LIBS-OSSL)
+	$(CC) apps/benchmark.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/benchmark $(LIBS-OSSL)
 
 #tells how to make an *.o object file from an *.cpp file
 %.o: %.cpp
