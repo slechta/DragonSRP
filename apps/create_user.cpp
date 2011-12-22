@@ -19,6 +19,8 @@
 #include "ossl/osslmathimpl.hpp"
 #include "ossl/osslrandom.hpp"
 
+#define SALTLEN 32
+
 using namespace DragonSRP;
 using namespace DragonSRP::Ossl;
 using namespace std;
@@ -48,7 +50,7 @@ int main(int argc, char **argv)
 		bytes password = Conversion::string2bytes(strPassword);
 		
 		bytes salt;
-		if (salt.size() == 0) salt = random.getRandom(32); // WTF? dont know how much, throws on error
+		if (salt.size() == 0) salt = random.getRandom(SALTLEN);
 		
 		bytes verificator = math.calculateVerificator(username, password, salt);
 		

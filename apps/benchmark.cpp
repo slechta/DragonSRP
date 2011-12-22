@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 		
 		// Create user
 		bytes salt;
-		if (salt.size() == 0) salt = random.getRandom(SALTLEN); // WTF? dont know how much, throws on error
+		if (salt.size() == 0) salt = random.getRandom(SALTLEN);
 		bytes verificator = math.calculateVerificator(username, password, salt);
 		
 		User u(username, verificator, salt);

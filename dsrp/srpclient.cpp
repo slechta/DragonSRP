@@ -47,7 +47,7 @@ namespace DragonSRP
 	
 	SrpClientAuthenticator SrpClient::getAuthenticator(bytes username, bytes password)
 	{
-		bytes a = random.getRandom(32); // WTF? dont know how much, throws on error
+		bytes a = random.getRandom(32); // length of salt, needs to be parametrized!
 		bytes A = math.calculateA(a);
 		return SrpClientAuthenticator(username, password, a, A);
 	}
