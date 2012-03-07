@@ -31,7 +31,16 @@ namespace DragonSRP
 	
 	void Mac::mac(const bytes &in, bytes &out)
 	{
+		bytes toHash;
+		toHash.reserve(ikeypad.size() + in.size());
+		Conversion::append(toHash, ikeypad);
+		Conversion::append(toHash, in);
+		bytes res = hash.hash(toHash);
 		
-		
+		toHash.clear();
+		toHash.reserve(okeypad.size() + res.size());
+		Conversion::append(toHash, okeypad);
+		Conversion::append(toHash, res);
+		out = hash.hash(toHash);
 	}
 }
