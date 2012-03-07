@@ -82,4 +82,9 @@ namespace DragonSRP
 	{
 		return SHA512_DIGEST_LENGTH;
 	}
+	
+	unsigned int OsslSha512::blockSize()
+	{
+		return 128;
+	}
 }

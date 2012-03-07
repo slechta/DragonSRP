@@ -34,35 +34,19 @@
 *  also delete it here.                                             *
 @  =============================================================== */
 
-/* ===============================================================  @
-*  This product includes software developed by the OpenSSL Project  *
-*  for use in the OpenSSL Toolkit. (http://www.openssl.org/)        *
-*                                                                   *
-*  This product includes cryptographic software                     *
-*  written by Eric Young (eay@cryptsoft.com)                        *
-*                                                                   *
-*  This product includes software                                   *
-*  written by Tim Hudson (tjh@cryptsoft.com)                        *
-@  =============================================================== */
-
-
-#ifndef DSRP_OSSL_SHA1_HPP
-#define DSRP_OSSL_SHA1_HPP
-
-#include "dsrp/common.hpp"
-#include "dsrp/hashinterface.hpp"
+#include "macexception.hpp"
 
 namespace DragonSRP
 {
-	class OsslSha1 : public HashInterface
+	MacException::MacException(const char *message) :
+		DsrpException(message)
 	{
-		public:
-			~OsslSha1();
-			bytes hash(const bytes &in);
-			unsigned int outputLen();
-			unsigned int blockSize();
-	};
+		
+	}
+	
+	MacException::MacException(std::string &message) :
+		DsrpException(message)
+	{
+		
+	}
 }
-
-
-#endif

@@ -30,15 +30,21 @@ OBJ-APPS =  apps/server_test.o \
             apps/create_user.o \
             apps/benchmark.o
 
+OBJ-MAC  =  mac/hmac.o \
+            mac/macexception.o
+
 LIBS-OSSL = -lssl
 
-all: dsrp ossl apps
+all: dsrp ossl apps mac
 
 #build the object files for dsrp
 dsrp: $(OBJ-DSRP)
 
 #to build ossl we first need to have build dsrp
 ossl: dsrp $(OBJ-OSSL)
+
+#buil mac
+mac: dsrp $(OBJ-MAC)
 
 #build the apps
 apps: dsrp ossl $(OBJ-APPS)

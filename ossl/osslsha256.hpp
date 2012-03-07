@@ -59,6 +59,7 @@ namespace DragonSRP
 			~OsslSha256();
 			bytes hash(const bytes &in);
 			unsigned int outputLen();
+			unsigned int blockSize();
 	};
 }
 
