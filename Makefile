@@ -65,3 +65,4 @@ clean::
 	rm -f apps/client_test
 	rm -f apps/create_user
 	rm -f apps/*.o
+	rm -f mac/*.o
