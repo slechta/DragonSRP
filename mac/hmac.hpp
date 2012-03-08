@@ -7,11 +7,11 @@
 
 namespace DragonSRP
 {
-	class Mac
+	class Hmac
 	{
 		public:
-			Mac(HashInterface &hashInterface, const bytes &key);
-			void mac(const bytes &in, bytes &out);
+			Hmac(HashInterface &hashInterface, const bytes &key);
+			void hmac(const bytes &in, bytes &out);
 			
 		private: 
 			HashInterface &hash;

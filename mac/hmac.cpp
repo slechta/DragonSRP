@@ -8,7 +8,7 @@
 
 namespace DragonSRP
 {
-	Mac::Mac(HashInterface &hashInterface, const bytes &key): hash(hashInterface), mKey(key)
+	Hmac::Hmac(HashInterface &hashInterface, const bytes &key): hash(hashInterface), mKey(key)
 	{
 		unsigned int padSize = hash.blockSize();
 		
@@ -29,7 +29,7 @@ namespace DragonSRP
 		}
 	}
 	
-	void Mac::mac(const bytes &in, bytes &out)
+	void Hmac::hmac(const bytes &in, bytes &out)
 	{
 		bytes toHash;
 		toHash.reserve(ikeypad.size() + in.size());
