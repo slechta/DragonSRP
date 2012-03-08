@@ -13,7 +13,8 @@ namespace DragonSRP
 		unsigned int padSize = hash.blockSize();
 		
 		if (mKey.size() == 0) throw MacException("Mac - empty key provided.");
-		if (mKey.size() > padSize) throw MacException("Mac - too long key provided.");
+		if (mKey.size() < hash.outputLen()) throw MacException("Mac - short key provided.");
+		if (mKey.size() > padSize) throw MacException("Mac - too long key provided. Hash it first.");
 		
 		mKey.reserve(padSize);
 		// expand key to match hash block size with zeros
