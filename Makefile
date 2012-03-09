@@ -29,7 +29,8 @@ OBJ-OSSL =  ossl/osslmd5.o \
 OBJ-APPS =  apps/server_test.o \
             apps/client_test.o \
             apps/create_user.o \
-            apps/benchmark.o
+            apps/benchmark.o \
+            apps/hmac_md5_testvector.o
 
 OBJ-MAC  =  mac/hmac.o \
             mac/macexception.o
@@ -48,11 +49,12 @@ ossl: dsrp $(OBJ-OSSL)
 mac: dsrp $(OBJ-MAC)
 
 #build the apps
-apps: dsrp ossl $(OBJ-APPS)
+apps: dsrp ossl mac $(OBJ-APPS)
 	$(CC) apps/server_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/server_test $(LIBS-OSSL)
 	$(CC) apps/client_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/client_test $(LIBS-OSSL)
 	$(CC) apps/create_user.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/create_user $(LIBS-OSSL)
 	$(CC) apps/benchmark.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/benchmark $(LIBS-OSSL)
+	$(CC) apps/hmac_md5_testvector.o $(OBJ-DSRP) $(OBJ-MAC) $(OBJ-OSSL) -o apps/hmac_md5_testvector $(LIBS-OSSL)
 
 #tells how to make an *.o object file from an *.cpp file
 %.o: %.cpp
@@ -65,5 +67,7 @@ clean::
 	rm -f apps/server_test
 	rm -f apps/client_test
 	rm -f apps/create_user
+	rm -f apps/benchmark
+	rm -f apps/hmac_md5_testvector
 	rm -f apps/*.o
 	rm -f mac/*.o
