@@ -18,7 +18,8 @@ OBJ-DSRP =  dsrp/conversionexception.o \
             dsrp/srpclientauthenticator.o \
             dsrp/memorylookup.o
 
-OBJ-OSSL =  ossl/osslsha1.o \
+OBJ-OSSL =  ossl/osslmd5.o \
+            ossl/osslsha1.o \
             ossl/osslsha256.o \
             ossl/osslsha512.o \
             ossl/osslrandom.o \
