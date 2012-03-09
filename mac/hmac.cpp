@@ -6,6 +6,17 @@
 #include "../dsrp/conversion.hpp"
 #include "macexception.hpp"
 
+/***********************************************************************
+ * RFC 2014 Page 3
+   Keys need to be chosen at random (or using a cryptographically strong
+   pseudo-random generator seeded with a random seed), and periodically
+   refreshed.  (Current attacks do not indicate a specific recommended
+   frequency for key changes as these attacks are practically
+   infeasible.  However, periodic key refreshment is a fundamental
+   security practice that helps against potential weaknesses of the
+   function and keys, and limits the damage of an exposed key.)
+ * *********************************************************************/
+
 namespace DragonSRP
 {
 	Hmac::Hmac(HashInterface &hashInterface, const bytes &key): hash(hashInterface), mKey(key)
