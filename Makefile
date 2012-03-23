@@ -41,9 +41,12 @@ AES-ASM =   aes/aes.o
 OBJ-MAC  =  mac/hmac.o \
             mac/macexception.o
 
+OBJ-DREL =  drel/aescounter.o \
+            drel/aesexception.o
+
 LIBS-OSSL = -lssl -lcrypto
 
-all: dsrp ossl app mac
+all: dsrp ossl app mac aes drel
 
 #build the object files for dsrp
 dsrp: $(OBJ-DSRP)
@@ -53,6 +56,9 @@ ossl: dsrp $(OBJ-OSSL)
 
 #build mac
 mac: dsrp $(OBJ-MAC)
+
+#build drel DRagon Encryption Layer
+drel: dsrp ossl aes mac $(OBJ-DREL)
 
 #compile the assebler part object file
 aes-asm-x86:

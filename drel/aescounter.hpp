@@ -16,7 +16,7 @@
 #include <sys/types.h>
 #include <inttypes.h>
 
-#include "aes.h"
+#include "aes/aes.h"
 
 
 namespace DragonEncryptionLayer
