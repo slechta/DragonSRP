@@ -6,3 +6,5 @@ create_user
 rfc_test
 benchmark
 aes/rfc3686
+hmac_md5_testvector
+
