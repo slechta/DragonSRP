@@ -41,9 +41,9 @@ AES-ASM =   aes/aes.o
 OBJ-MAC  =  mac/hmac.o \
             mac/macexception.o
 
-LIBS-OSSL = -lssl
+LIBS-OSSL = -lssl -lcrypto
 
-all: dsrp ossl apps mac
+all: dsrp ossl app mac
 
 #build the object files for dsrp
 dsrp: $(OBJ-DSRP)
@@ -66,8 +66,8 @@ aes: $(OBJ-AES) $(OBJ-NNN) aes-asm-amd64
 
 # APPLICATION SECTION
 
-#build the apps
-app:  apps-srp apps-hmac
+#build the app
+app:  app-srp app-hmac
 
 app-srp: app-srp-server-test app-srp-client-test app-srp-create-user app-srp-benchmark
 
