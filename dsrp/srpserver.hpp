@@ -54,7 +54,7 @@ namespace DragonSRP
 	class SrpServer
 	{	
 		public:
-			SrpServer(LookupInterface &lookupInterface, MathInterface &mathInterface, RandomInterface &randomInterface);
+			SrpServer(LookupInterface &lookupInterface, MathInterface &mathInterface, RandomInterface &randomInterface, bool interleaveKey = false);
 			SrpVerificator getVerificator(const bytes &username, const bytes &AA);
 			
 			#ifdef DSRP_DANGEROUS_TESTING
@@ -66,6 +66,7 @@ namespace DragonSRP
 			LookupInterface &lookup;
 			MathInterface &math;
 			RandomInterface &random;
+			bool interleave;
 	};
 }
 

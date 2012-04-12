@@ -122,7 +122,7 @@ namespace Ossl
     // x = H(salt || H(username || ":" || password)
     // S = (B - k*(g^x)) ^ (a + ux)
     // K = H(S)
-	void OsslMathImpl::clientChallange(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &M1_out, bytes &M2_out, bytes &K_out)
+	void OsslMathImpl::clientChallange(const bytes &salt, const bytes &aa, const bytes &AA, const bytes &BB, const bytes &username, const bytes &password, bytes &M1_out, bytes &M2_out, bytes &K_out, bool interleave)
 	{   
 		checkNg(); // will throw on error
 		BIGNUM *B = BN_new();
@@ -188,7 +188,9 @@ namespace Ossl
 			// Calculate K
 			bytes SS;
 			OsslConversion::bignum2bytes(S, SS);
-			K_out = hash.hash(SS);
+			
+			if (!interleave) K_out = hash.hash(SS);
+			else interleaveS(SS, K_out);
 		
 			// Calculate M1
 			M1_out = calculateM1(username, salt, AA, BB, K_out);
@@ -228,7 +230,7 @@ namespace Ossl
 			
 	}
 	
-	void OsslMathImpl::serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &B_out, bytes &M1_out, bytes &M2_out, bytes &K_out)
+	void OsslMathImpl::serverChallange(const bytes &username, const bytes &salt, const bytes &verificator, const bytes &AA, const bytes &bb, bytes &B_out, bytes &M1_out, bytes &M2_out, bytes &K_out, bool interleave)
 	{
 		checkNg(); // will throw on error
 		
@@ -291,7 +293,9 @@ namespace Ossl
 			BN_mod_mul(tmp2, A, tmp1, N, ctx);
 			BN_mod_exp(S, tmp2, b, N, ctx);
 			OsslConversion::bignum2bytes(S, SS);
-			K_out = hash.hash(SS);
+			
+			if (!interleave) K_out = hash.hash(SS);
+			else interleaveS(SS, K_out);
 			
 			#ifdef DSRP_DANGEROUS_TESTING
 				S_server_premaster_secret = SS;
@@ -397,6 +401,43 @@ namespace Ossl
 		return vv;
 	}
  
+	void OsslMathImpl::interleaveS(const bytes &S, bytes &K)
+	{
+		std::vector<unsigned char>::const_iterator it;
+		
+		std::vector<unsigned char>::const_iterator halfit;
+		std::vector<unsigned char>::iterator itE;
+		
+		// Skip leading zeroshash
+		for(it = S.begin() ; it < S.end() && *it == 0; it++ );
+		if ((S.end() - S.begin()) % 2) it++; // skip odd byte
+		if (it == S.end()) throw DsrpException("OsslMathImpl::interleaveS: something went terribly wrong");
+		
+		unsigned int halfLen = (S.end() - S.begin()) / 2;
+		
+		bytes E(halfLen);
+		
+		// Even
+		for(halfit = it, itE = E.begin() ; halfit < S.end(); halfit += 2, itE++) *itE = *halfit;
+		
+		bytes G = hash.hash(E);
+		
+		// Odd
+		for(halfit = ++it, itE = E.begin() ; halfit < S.end(); halfit += 2, itE++) *itE = *halfit;
+		
+		bytes H = hash.hash(E);
+		
+		K.resize(hash.outputLen() * 2);
+		
+		// Now mix the two
+		for (int i = 0; i < hash.outputLen(); i++)
+		{
+			K[2 * i] = G.at(i);
+			K[(2 * i) + 1] = H.at(i);
+		}
+		
+	}
+	
 // Namespace endings   
 }
 }

@@ -49,7 +49,7 @@ namespace DragonSRP
 	class SrpClient
 	{		
 		public:
-			SrpClient(MathInterface &mathInterface, RandomInterface &randomInterface);
+			SrpClient(MathInterface &mathInterface, RandomInterface &randomInterface, bool interleaveKey = false);
 			SrpClientAuthenticator getAuthenticator(bytes username, bytes password);
 			bytes getM1(bytes salt, bytes B, SrpClientAuthenticator &sca);
 	
@@ -61,6 +61,7 @@ namespace DragonSRP
 		private:
 			MathInterface &math;
 			RandomInterface &random;	
+			bool interleave;
 	};
 }
 
