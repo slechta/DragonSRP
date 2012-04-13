@@ -4,7 +4,7 @@ CCC = g++
 ASM = yasm
 
 CCFLAGS = -Wall -I.
-CCCFLAGS = -Wall -ggdb -std=c++0x -I. -O3
+CCCFLAGS = -Wall -ggdb -std=c++0x -I. -O3 -DDSRP_DANGEROUS_TESTING
 
 OBJ-DSRP =  dsrp/conversionexception.o \
             dsrp/conversion.o \
@@ -75,11 +75,11 @@ aes: $(OBJ-AES) $(OBJ-NNN) aes-asm-amd64
 #build the app
 app:  app-srp app-hmac
 
-app-srp: app-srp-server-test app-srp-client-test app-srp-create-user app-srp-benchmark
+app-srp: app-srp-server-test app-srp-client-test app-srp-create-user app-srp-benchmark app-srp-rfctest app-srp-qtest
 
 app-hmac: app-hmac-testvector
 
-app-aes: app-aes-rfx3686
+app-aes: app-aes-rfc3686
 
 app-srp-server-test: dsrp ossl apps/server_test.o
 	$(CCC) apps/server_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/server_test $(LIBS-OSSL)
@@ -92,11 +92,17 @@ app-srp-create-user: dsrp ossl apps/create_user.o
 	
 app-srp-benchmark: dsrp ossl apps/benchmark.o
 	$(CCC) apps/benchmark.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/benchmark $(LIBS-OSSL)
+
+app-srp-rfctest: dsrp ossl apps/rfc_test.o
+	$(CCC) apps/rfc_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/rfc_test $(LIBS-OSSL)
+
+app-srp-qtest: dsrp ossl apps/qtest.o
+	$(CCC) apps/qtest.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/qtest $(LIBS-OSSL)
 	
 app-hmac-testvector: dsrp ossl mac apps/hmac_md5_testvector.o
 	$(CCC) apps/hmac_md5_testvector.o $(OBJ-DSRP) $(OBJ-MAC) $(OBJ-OSSL) -o apps/hmac_md5_testvector $(LIBS-OSSL)
 
-app-aes-rfx3686: aes aes/rfc3686.o
+app-aes-rfc3686: aes aes/rfc3686.o
 	$(CCC) aes/rfc3686.o $(OBJ-AES) $(AES-ASM) -o aes/rfc3686
 	
 #tells how to make an *.o object file from an *.c file
