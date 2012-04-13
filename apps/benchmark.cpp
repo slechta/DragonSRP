@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <sys/time.h>
 
 #include "dsrp/srpclient.hpp"
 #include "dsrp/srpclientauthenticator.hpp"
@@ -32,6 +33,13 @@ using namespace std;
 #define SALTLEN 32
 #define PRIMELEN 1024
 #define ITERATIONS 1000
+
+unsigned long long get_usec()
+{
+    struct timeval t;
+    gettimeofday(&t, NULL);
+    return (((unsigned long long)t.tv_sec) * 1000000) + t.tv_usec;
+}
 
 int main(int argc, char **argv)
 {	
@@ -69,7 +77,12 @@ int main(int argc, char **argv)
 		}
 		// End of user creation
 		
+		unsigned long long start;
+		unsigned long long duration;
+		
 		start = clock();
+		start = get_usec();
+		 
 		// ----- benchmark begin
 		for (int i = 0; i < ITERATIONS; i++)
 		{
@@ -79,9 +92,13 @@ int main(int argc, char **argv)
 			ver.authenticate(M1, M2, K_server); // M1	
 			bytes K_client = sca.getSessionKey(M2); // M2
 		}
-		finish = clock();
 		
+		duration = get_usec() - start;
+		
+		finish = clock();
+		printf("Usec per call: %d\n", (int)(duration / ITERATIONS));
 		cout << "Time for sort (seconds): " << ((double)(finish - start))/CLOCKS_PER_SEC;
+		
 		cout << "end; ok" << endl;
 		return 0;		
 	}
