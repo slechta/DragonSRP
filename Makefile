@@ -42,7 +42,8 @@ OBJ-MAC  =  mac/hmac.o \
             mac/macexception.o
 
 OBJ-DREL =  drel/aescounter.o \
-            drel/aesexception.o
+            drel/aesexception.o \
+            drel/simplekeyderivator.o
 
 LIBS-OSSL = -lssl -lcrypto
 
