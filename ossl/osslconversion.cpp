@@ -53,11 +53,7 @@ namespace DragonSRP
 {
 	void OsslConversion::bytes2bignum(const bytes &in, BIGNUM *out)
 	{
-		unsigned char *bytesIn = (unsigned char*) malloc(sizeof(unsigned char) * in.size());
-		// should check if bytesIn==NULL !!!!!
-		copy(in.begin(), in.end(), bytesIn);
-		BN_bin2bn(bytesIn, in.size(), out);
-		free(bytesIn);
+		BN_bin2bn(&in[0], in.size(), out);
 	}
 	
 	void OsslConversion::bignum2bytes(BIGNUM *in, bytes& out)

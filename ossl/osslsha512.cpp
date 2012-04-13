@@ -63,7 +63,7 @@ namespace DragonSRP
 	bytes OsslSha512::hash(const bytes &in)
 	{
 		int len;
-		unsigned char *arr = Conversion::bytes2array(in, &len);
+		const unsigned char *arr = Conversion::bytes2array(in, &len);
 	
 		SHA512_CTX context;
 		unsigned char md[SHA512_DIGEST_LENGTH];
@@ -74,7 +74,6 @@ namespace DragonSRP
 		
 		bytes ret = Conversion::array2bytes(md, SHA512_DIGEST_LENGTH);
 		
-		free(arr);
 		return ret;
 	}
 	
