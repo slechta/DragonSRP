@@ -59,21 +59,12 @@ namespace DragonSRP
 		// empty
 	}
 	
-	bytes OsslSha256::hash(const bytes &in)
+	void OsslSha256::hash(const unsigned char *in, unsigned int inLen, unsigned char *out)
 	{
-		int len;
-		const unsigned char *arr = Conversion::bytes2array(in, &len);
-	
 		SHA256_CTX context;
-		unsigned char md[SHA256_DIGEST_LENGTH];
-		
 		SHA256_Init(&context);
-		SHA256_Update(&context, arr, len);
-		SHA256_Final(md, &context);
-		
-		bytes ret = Conversion::array2bytes(md, SHA256_DIGEST_LENGTH);
-		
-		return ret;
+		SHA256_Update(&context, in, inLen);
+		SHA256_Final(out, &context);
 	}
 	
 	unsigned int OsslSha256::outputLen()

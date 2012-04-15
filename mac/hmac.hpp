@@ -11,7 +11,9 @@ namespace DragonSRP
 	{
 		public:
 			Hmac(HashInterface &hashInterface, const bytes &key);
-			void hmac(const bytes &in, bytes &out);
+			void hmac(const bytes &data, bytes &mac);
+			void hmac(const unsigned char *in, unsigned int inLen, unsigned char *mac);
+			unsigned int outputLen();
 			
 		private: 
 			HashInterface &hash;

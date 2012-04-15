@@ -79,7 +79,11 @@ namespace Ossl
         both.resize(2 * NN.size() - gg.size(), 0);
         
         both.insert(both.end(), gg.begin(), gg.end());
-        bytes kk = hash.hash(both); // kk = H(N || PAD(g))
+        
+        // REPL: bytes kk = hash.hash(both); // kk = H(N || PAD(g))
+        bytes kk;
+        kk.resize(hash.outputLen());
+        hash.hash(&both[0], both.size(), &kk[0]);
 		
         OsslConversion::bytes2bignum(kk, k);        
 	
@@ -155,7 +159,11 @@ namespace Ossl
 		}
 		cu.insert(cu.end(), BB.begin(), BB.end());
 		
-		bytes uu = hash.hash(cu);
+		// REPL: bytes uu = hash.hash(cu);
+		bytes uu;
+		uu.resize(hash.outputLen());
+        hash.hash(&cu[0], cu.size(), &uu[0]);
+		
 		OsslConversion::bytes2bignum(uu, u);
 		
 		OsslConversion::bytes2bignum(BB, B);
@@ -164,9 +172,21 @@ namespace Ossl
 		bytes ucp = username;
 		ucp.push_back(58); // colon :
 		Conversion::append(ucp, password);
-		bytes hashUcp = hash.hash(ucp);
+		
+		
+		// REPL: bytes hashUcp = hash.hash(ucp);
+		bytes hashUcp;
+		hashUcp.resize(hash.outputLen());
+        hash.hash(&ucp[0], ucp.size(), &hashUcp[0]);
+		
+		
 		Conversion::prepend(hashUcp, salt);
-		bytes xx = hash.hash(hashUcp);
+		
+		// REPL: bytes xx = hash.hash(hashUcp);
+		bytes xx;
+		xx.resize(hash.outputLen());
+        hash.hash(&hashUcp[0], hashUcp.size(), &xx[0]);
+		
 		OsslConversion::bytes2bignum(xx, x);
 		
 		#ifdef DSRP_DANGEROUS_TESTING
@@ -189,7 +209,13 @@ namespace Ossl
 			bytes SS;
 			OsslConversion::bignum2bytes(S, SS);
 			
-			if (!interleave) K_out = hash.hash(SS);
+			if (!interleave) 
+			{
+				// REPL: K_out = hash.hash(SS);
+				
+				K_out.resize(hash.outputLen());
+				hash.hash(&SS[0], SS.size(), &K_out[0]);
+			}
 			else interleaveS(SS, K_out);
 		
 			// Calculate M1
@@ -199,7 +225,11 @@ namespace Ossl
 			bytes toHashM2 = AA;
 			Conversion::append(toHashM2, M1_out);
 			Conversion::append(toHashM2, K_out);
-			M2_out = hash.hash(toHashM2);
+			
+			// REPL: M2_out = hash.hash(toHashM2);
+			bytes M2_out;
+			M2_out.resize(hash.outputLen());
+			hash.hash(&toHashM2[0], toHashM2.size(), &M2_out[0]);
 			
 			#ifdef DSRP_DANGEROUS_TESTING
 				S_client_premaster_secret = SS;
@@ -285,7 +315,11 @@ namespace Ossl
 			}
 			Conversion::append(cu, B_out);
 			
-			bytes uu = hash.hash(cu);
+			// REPL: bytes uu = hash.hash(cu);
+			bytes uu;
+			uu.resize(hash.outputLen());
+			hash.hash(&cu[0], cu.size(), &uu[0]);
+			
 			OsslConversion::bytes2bignum(uu, u);
 		
 			// Calculate S = (A *(v^u)) ^ b
@@ -294,7 +328,13 @@ namespace Ossl
 			BN_mod_exp(S, tmp2, b, N, ctx);
 			OsslConversion::bignum2bytes(S, SS);
 			
-			if (!interleave) K_out = hash.hash(SS);
+			if (!interleave) 
+			{ 
+				// REPL: K_out = hash.hash(SS);
+				
+				K_out.resize(hash.outputLen());
+				hash.hash(&SS[0], SS.size(), &K_out[0]);
+			}
 			else interleaveS(SS, K_out);
 			
 			#ifdef DSRP_DANGEROUS_TESTING
@@ -309,7 +349,12 @@ namespace Ossl
 			bytes toHashM2 = AA;
 			Conversion::append(toHashM2, M1_out);
 			Conversion::append(toHashM2, K_out);
-			M2_out = hash.hash(toHashM2);		
+			
+			
+			// REPL: M2_out = hash.hash(toHashM2);	
+			bytes M2_out;	
+			M2_out.resize(hash.outputLen());
+			hash.hash(&toHashM2[0], toHashM2.size(), &M2_out[0]);
 		}
 		else
 		{
@@ -344,10 +389,21 @@ namespace Ossl
 		OsslConversion::bignum2bytes(N, NN);
 		OsslConversion::bignum2bytes(g, gg);
 		
-		bytes H_N = hash.hash(NN); 
-		bytes H_g = hash.hash(gg);
+		// REPL: bytes H_N = hash.hash(NN); 
+		bytes H_N;
+		H_N.resize(hash.outputLen());
+		hash.hash(&NN[0], NN.size(), &H_N[0]);
 		
-		bytes H_username = hash.hash(username);
+		// REPL: bytes H_g = hash.hash(gg);
+		bytes H_g;
+		H_g.resize(hash.outputLen());
+		hash.hash(&gg[0], gg.size(), &H_g[0]);
+		
+		// REPL: bytes H_username = hash.hash(username);
+		bytes H_username;
+		H_username.resize(hash.outputLen());
+		hash.hash(&username[0], username.size(), &H_username[0]);
+		
 		bytes H_xor;
 		
 		H_xor.resize(hash.outputLen(), 0);
@@ -359,7 +415,14 @@ namespace Ossl
 		Conversion::append(toHash, A);
 		Conversion::append(toHash, B);
 		Conversion::append(toHash, K);		
-		return hash.hash(toHash);
+		
+		// REPL: bytes ret = hash.hash(toHash);
+		bytes ret;
+		
+		ret.resize(hash.outputLen());
+		hash.hash(&toHash[0], toHash.size(), &ret[0]);
+		
+		return ret;
 	}
 	
 	void OsslMathImpl::checkNg()
@@ -378,9 +441,19 @@ namespace Ossl
 		bytes ucp = username;
 		ucp.push_back(58); // colon :
 		Conversion::append(ucp, password);
-		bytes hashUcp = hash.hash(ucp);
+		
+		// REPL: bytes hashUcp = hash.hash(ucp);
+		bytes hashUcp;
+		hashUcp.resize(hash.outputLen());
+		hash.hash(&ucp[0], ucp.size(), &hashUcp[0]);
+		
 		Conversion::prepend(hashUcp, salt);
-		bytes xx = hash.hash(hashUcp);
+		
+		// REPL: bytes xx = hash.hash(hashUcp);
+		bytes xx;
+		xx.resize(hash.outputLen());
+		hash.hash(&hashUcp[0], hashUcp.size(), &xx[0]);
+		
 		
 		// Calculate v = g ^ x;
 		BIGNUM *x = BN_new();
@@ -420,17 +493,23 @@ namespace Ossl
 		// Even
 		for(halfit = it, itE = E.begin() ; halfit < S.end(); halfit += 2, itE++) *itE = *halfit;
 		
-		bytes G = hash.hash(E);
+		// REPL: bytes G = hash.hash(E);
+		bytes G;
+		G.resize(hash.outputLen());
+		hash.hash(&E[0], E.size(), &G[0]);
 		
 		// Odd
 		for(halfit = ++it, itE = E.begin() ; halfit < S.end(); halfit += 2, itE++) *itE = *halfit;
 		
-		bytes H = hash.hash(E);
+		// REPL: bytes H = hash.hash(E);
+		bytes H;
+		H.resize(hash.outputLen());
+		hash.hash(&E[0], E.size(), &H[0]);
 		
 		K.resize(hash.outputLen() * 2);
 		
 		// Now mix the two
-		for (int i = 0; i < hash.outputLen(); i++)
+		for (unsigned int i = 0; i < hash.outputLen(); i++)
 		{
 			K[2 * i] = G.at(i);
 			K[(2 * i) + 1] = H.at(i);

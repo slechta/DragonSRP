@@ -41,18 +41,40 @@ namespace DragonSRP
 		}
 	}
 	
-	void Hmac::hmac(const bytes &in, bytes &out)
+	void Hmac::hmac(const bytes &data, bytes &mac)
 	{
+		/*
 		bytes toHash;
-		toHash.reserve(ikeypad.size() + in.size());
+		toHash.reserve(ikeypad.size() + data.size());
 		Conversion::append(toHash, ikeypad);
-		Conversion::append(toHash, in);
+		Conversion::append(toHash, data);
 		bytes res = hash.hash(toHash);
 		
 		toHash.clear();
 		toHash.reserve(okeypad.size() + res.size());
 		Conversion::append(toHash, okeypad);
 		Conversion::append(toHash, res);
-		out = hash.hash(toHash);
+		mac = hash.hash(toHash);
+		*/
+	
+		mac.resize(hash.outputLen());
+		hmac(&data[0], data.size(), &mac[0]);
+	}
+	
+	void Hmac::hmac(const unsigned char *in, unsigned int inLen, unsigned char *mac)
+	{
+		unsigned char toHash[ikeypad.size() + inLen];
+		memcpy(toHash, &ikeypad[0], ikeypad.size());
+		memcpy(toHash + ikeypad.size(), &in[0], inLen);
+		unsigned char res[hash.outputLen()];
+		hash.hash(toHash, ikeypad.size() + inLen, res);
+		memcpy(toHash, &okeypad[0], okeypad.size());
+		memcpy(toHash + okeypad.size(), &res[0], hash.outputLen());
+		hash.hash(toHash, okeypad.size() + hash.outputLen(), mac);
+	}
+	
+	unsigned int Hmac::outputLen()
+	{
+		return hash.outputLen();
 	}
 }

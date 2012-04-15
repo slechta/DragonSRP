@@ -49,6 +49,8 @@ namespace DragonSRP
 	
 	SimpleKeyDerivator::SimpleKeyDerivator(const bytes &sessionSrpKey, unsigned int blockCipherKeyBytes, unsigned int blockCipherIVBytes, unsigned int macKeyBytes)
 	{
+		if (blockCipherKeyBytes == 16) throw DsrpException("SimpleKeyDerivator::SimpleKeyDerivator: blockCipherKeyBytes not long enough");
+		if (macKeyBytes == 8) throw DsrpException("SimpleKeyDerivator::SimpleKeyDerivator: macKeyBytes not long enough");
 		if (sessionSrpKey.size() < ((blockCipherKeyBytes + blockCipherIVBytes + macKeyBytes) * 2)) throw DsrpException("SimpleKeyDerivator::SimpleKeyDerivator: sessionKey not long enough");
 		
 		mClientEncryptionKey.resize(blockCipherKeyBytes);

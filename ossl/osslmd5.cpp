@@ -59,21 +59,12 @@ namespace DragonSRP
 		// empty
 	}
 	
-	bytes OsslMd5::hash(const bytes &in)
+	void OsslMd5::hash(const unsigned char *in, unsigned int inLen, unsigned char *out)
 	{
-		int len;
-		const unsigned char *arr = Conversion::bytes2array(in, &len);
-	
 		MD5_CTX context;
-		unsigned char md[MD5_DIGEST_LENGTH];
-		
 		MD5_Init(&context);
-		MD5_Update(&context, arr, len);
-		MD5_Final(md, &context);
-		
-		bytes ret = Conversion::array2bytes(md, MD5_DIGEST_LENGTH);
-		
-		return ret;
+		MD5_Update(&context, in, inLen);
+		MD5_Final(out, &context);
 	}
 	
 	unsigned int OsslMd5::outputLen()

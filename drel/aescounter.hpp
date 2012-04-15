@@ -47,7 +47,7 @@ namespace DragonEncryptionLayer
 		
 		public:
 			AesCounter(unsigned char *salt, int saltlen, unsigned char *key, int keylen);
-			void encrypt(unsigned char *datain, unsigned char *dataout, int len);
+			void encrypt(const unsigned char *datain, unsigned char *dataout, int len, uint64_t &seqNum);
 		
 	};
 }

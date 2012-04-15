@@ -19,11 +19,12 @@ namespace DragonEncryptionLayer
 	}
 
 
-	void AesCounter::encrypt(unsigned char *datain, unsigned char *dataout, int len)
+	void AesCounter::encrypt(const unsigned char *datain, unsigned char *dataout, int len, uint64_t &seqNum)
 	{
 		if (len <= 0 || len > DREL_AES_MAXPACKETOCT) throw AesException("Invalid input plaintext message length");
 		if (mIv == 0xFFFFFFFFFFFFFFFF) throw AesException("Packet counter exceeded - IV");
 		mIv++; // increment IV
+		*seqNum = mIv;
 		memcpy(ctr_buf, mSalt, DREL_AES_SALTLEN);
 		memcpy(ctr_buf + DREL_AES_SALTLEN, &mIv, DREL_AES_IVLEN);
 		ctr_buf[DREL_AES_BLOCKLEN_BYTES-1] = 1; // Set initial packet block counter to one

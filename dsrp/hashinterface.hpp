@@ -45,7 +45,7 @@ namespace DragonSRP
 	{
 		public:
 			virtual ~HashInterface() = 0;
-			virtual bytes hash(const bytes &in)=0;
+			virtual void hash(const unsigned char *in, unsigned int inLen, unsigned char *out)=0;
 			virtual unsigned int outputLen()=0;
 			virtual unsigned int blockSize()=0;
 	};
