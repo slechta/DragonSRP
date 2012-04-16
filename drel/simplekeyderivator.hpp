@@ -35,7 +35,7 @@
 @  =============================================================== */
 
 #ifndef DSRP_SIMPLEKEYDERIVATOR_HPP
-#define DSRP_SIMLPEKEYDERIVATOR_HPP
+#define DSRP_SIMPLEKEYDERIVATOR_HPP
 
 #include <vector>
 #include "../dsrp/common.hpp"

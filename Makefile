@@ -32,11 +32,8 @@ OBJ-OSSL =  ossl/osslmd5.o \
 
 OBJ-AES =   aes/aeskey.o \
             aes/aes_modes.o \
-            aes/aestab.o
-
-AES-NNN =   aes/aescrypt.o
-
-AES-ASM =   aes/aes.o
+            aes/aestab.o \
+			aes/aescrypt.o
 
 OBJ-MAC  =  mac/hmac.o \
             mac/macexception.o
@@ -63,26 +60,21 @@ mac: dsrp $(OBJ-MAC)
 #build drel DRagon Encryption Layer
 drel: dsrp ossl aes mac $(OBJ-DREL)
 
-#compile the assebler part object file
-aes-asm-x86:
-	$(ASM) -f elf32 -o $(AES-ASM) aes/aes_x86.asm
-
-aes-asm-amd64:
-	$(ASM) -f elf64 -o $(AES-ASM) aes/aes_amd64.asm
-
 #compile aes object files
-aes: $(OBJ-AES) $(OBJ-NNN) aes-asm-amd64
+aes: $(OBJ-AES)
 
 # APPLICATION SECTION
 
 #build the app
-app:  app-srp app-hmac
+app:  app-srp app-hmac app-drel app-aes
 
 app-srp: app-srp-server-test app-srp-client-test app-srp-create-user app-srp-benchmark app-srp-rfctest app-srp-qtest
 
 app-hmac: app-hmac-testvector
 
 app-aes: app-aes-rfc3686
+
+app-drel: app-drel-cryptotest
 
 app-srp-server-test: dsrp ossl apps/server_test.o
 	$(CCC) apps/server_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/server_test $(LIBS-OSSL)
@@ -106,7 +98,10 @@ app-hmac-testvector: dsrp ossl mac apps/hmac_md5_testvector.o
 	$(CCC) apps/hmac_md5_testvector.o $(OBJ-DSRP) $(OBJ-MAC) $(OBJ-OSSL) -o apps/hmac_md5_testvector $(LIBS-OSSL)
 
 app-aes-rfc3686: aes aes/rfc3686.o
-	$(CCC) aes/rfc3686.o $(OBJ-AES) $(AES-ASM) -o aes/rfc3686
+	$(CCC) aes/rfc3686.o $(OBJ-AES) -o aes/rfc3686
+	
+app-drel-cryptotest: drel apps/cryptotest.o
+	$(CCC) apps/cryptotest.o $(OBJ-AES) $(OBJ-DREL) $(OBJ-MAC) $(OBJ-DSRP) $(OBJ-OSSL) -o apps/cryptotest $(LIBS-OSSL)
 	
 #tells how to make an *.o object file from an *.c file
 %.o: %.c

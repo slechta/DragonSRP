@@ -1,7 +1,7 @@
 // Dragon Encryption Layer
 
 #ifndef DREL_DATAGRAMENCRYPTOR_HPP
-#define DREL_DATAGRAMDECRYPTOR_HPP
+#define DREL_DATAGRAMENCRYPTOR_HPP
 
 #include <sys/types.h>
 #include <inttypes.h>
@@ -31,7 +31,7 @@ namespace DragonSRP
 	{	
 		public:
 			DatagramEncryptor(const bytes &encryptionKey, const bytes &IV, const bytes &macKey);
-			void encryptAndAuthenticate(unsigned char *plaintext, unsigned int plaintextLen, unsigned char *out, unsigned int *outLen); // throws
+			void encryptAndAuthenticate(const unsigned char *plaintext, unsigned int plaintextLen, unsigned char *out, unsigned int *outLen); // throws
 			unsigned int getOverheadLen();
 			
 		private:	

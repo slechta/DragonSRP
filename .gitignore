@@ -8,3 +8,5 @@ benchmark
 aes/rfc3686
 hmac_md5_testvector
 qtest
+cryptotest
+

@@ -1,7 +1,11 @@
 
 #include <string.h>
 
+#include <stdio.h>
+
 #include "datagramencryptor.hpp"
+
+// check if key persist aes_encrypt_key; !!!
 
 namespace DragonSRP
 {
@@ -20,7 +24,7 @@ namespace DragonSRP
 	}
 	
 	// Assumes sizeof(out) >= plaintextLen + getOverheadLen()   [MTU + OVERHEAD]
-	void DatagramEncryptor::encryptAndAuthenticate(unsigned char *plaintext, unsigned int plaintextLen, unsigned char *out, unsigned int *outLen) // throws
+	void DatagramEncryptor::encryptAndAuthenticate(const unsigned char *plaintext, unsigned int plaintextLen, unsigned char *out, unsigned int *outLen) // throws
 	{
 		uint16_t dataLen = plaintextLen; //  possible endianess inssues
 		uint64_t seqNum = aesCtr.getCurrentIV() + 1;
@@ -31,13 +35,19 @@ namespace DragonSRP
 		// SET ENC(DATA)
 		// in -----encrypt-----> encdata
 		// ---> seqNum
+		printf("starting aesCtr.encrypt()\n");
 		aesCtr.encrypt(plaintext, out + DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE , plaintextLen); // Possible optim. direct to &out[lenSize + seqSize]
+		printf("finished aesCtr.encrypt()\n");
 		
 		// SET DIGEST
 		// Add trunc digest
 		unsigned char digest[hmac.outputLen()];
 		hmac.hmac(out, DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE + plaintextLen, digest);
 		memcpy(out + DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE + plaintextLen, digest, DSRP_ENCPARAM_TRUNCDIGEST_SIZE); // could be avoided (optim.)
+		
+		*outLen = plaintextLen + DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE + DSRP_ENCPARAM_TRUNCDIGEST_SIZE;
+		printf("plaintextLen: %d\n", plaintextLen);
+		printf("outLen: %d\n", *outLen);
 	}
 
 

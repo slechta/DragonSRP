@@ -1,6 +1,8 @@
 
 #include <string.h>
 
+#include <stdio.h>
+
 #include "aescounter.hpp"
 #include "aesexception.hpp"
 
@@ -28,10 +30,19 @@ namespace DragonSRP
 		memcpy(ctr_buf + DREL_AES_SALTLEN, &mIv, DREL_AES_IVLEN);
 		ctr_buf[DREL_AES_BLOCKLEN_BYTES-1] = 1; // Set initial packet block counter to one
 		
-		aes_mode_reset(aes_ctx); // important!!! do not delete!!!
-		int ret = aes_ctr_crypt(datain, dataout, len, ctr_buf, aes_custom_inc, aes_ctx);
+		printf("starting aes_mode_reset()\n");
+		//aes_mode_reset(aes_ctx); // important!!! do not delete!!!
+		if (aes_encrypt_key256(mKey, aes_ctx) != EXIT_SUCCESS) throw AesException("Key setup failed");
+		printf("finished aes_mode_reset()\n");
 		
+		printf("starting aes_ctr_crypt()\n");
+		printf("len is: %d\n", len);
+		int ret = aes_ctr_crypt(datain, dataout, len, ctr_buf, aes_custom_inc, aes_ctx);
+		printf("finished aes_ctr_crypt()\n");
+		
+		printf("AES return value: %d\n", ret);
 		if (ret != EXIT_SUCCESS) throw AesException("Aes encryption failed");
+		printf("Aes exception not thrown\n");
 	}
 
 
