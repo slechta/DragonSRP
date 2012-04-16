@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace DragonEncryptionLayer
+namespace DragonSRP
 {
 	class AesException
 	{

@@ -2,7 +2,7 @@
 #include "aesexception.hpp"
 
 
-namespace DragonEncryptionLayer
+namespace DragonSRP
 {
 	AesException::AesException(const char *message) :
 		msg(message)

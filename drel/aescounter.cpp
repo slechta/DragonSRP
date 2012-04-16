@@ -4,10 +4,10 @@
 #include "aescounter.hpp"
 #include "aesexception.hpp"
 
-namespace DragonEncryptionLayer
+namespace DragonSRP
 {
 
-	AesCounter::AesCounter(unsigned char *salt, int saltlen, unsigned char *key, int keylen) : mIv(0)
+	AesCounter::AesCounter(const unsigned char *salt, int saltlen, const unsigned char *key, int keylen) : mIv(0)
 	{
 		if (saltlen != DREL_AES_SALTLEN) throw AesException("Worng salt length");
 		if (keylen != DREL_AES_KEYLEN) throw AesException("Worng key length");
@@ -19,12 +19,11 @@ namespace DragonEncryptionLayer
 	}
 
 
-	void AesCounter::encrypt(const unsigned char *datain, unsigned char *dataout, int len, uint64_t &seqNum)
+	void AesCounter::encrypt(const unsigned char *datain, unsigned char *dataout, int len)
 	{
 		if (len <= 0 || len > DREL_AES_MAXPACKETOCT) throw AesException("Invalid input plaintext message length");
 		if (mIv == 0xFFFFFFFFFFFFFFFF) throw AesException("Packet counter exceeded - IV");
 		mIv++; // increment IV
-		*seqNum = mIv;
 		memcpy(ctr_buf, mSalt, DREL_AES_SALTLEN);
 		memcpy(ctr_buf + DREL_AES_SALTLEN, &mIv, DREL_AES_IVLEN);
 		ctr_buf[DREL_AES_BLOCKLEN_BYTES-1] = 1; // Set initial packet block counter to one
@@ -43,5 +42,8 @@ namespace DragonEncryptionLayer
 		ctr_buf[0]++;
 	}
 
-
+	uint64_t AesCounter::getCurrentIV()
+	{
+		return mIv;
+	}
 }

@@ -19,7 +19,7 @@
 #include "aes/aes.h"
 
 
-namespace DragonEncryptionLayer
+namespace DragonSRP
 {
 	void aes_custom_inc(unsigned char ctr_buf[DREL_AES_BLOCKLEN_BYTES]);
 	
@@ -46,9 +46,9 @@ namespace DragonEncryptionLayer
 			unsigned char ctr_buf[DREL_AES_BLOCKLEN_BYTES];
 		
 		public:
-			AesCounter(unsigned char *salt, int saltlen, unsigned char *key, int keylen);
-			void encrypt(const unsigned char *datain, unsigned char *dataout, int len, uint64_t &seqNum);
-		
+			AesCounter(const unsigned char *salt, int saltlen, const unsigned char *key, int keylen);
+			void encrypt(const unsigned char *datain, unsigned char *dataout, int len);
+			uint64_t getCurrentIV();
 	};
 }
 #endif

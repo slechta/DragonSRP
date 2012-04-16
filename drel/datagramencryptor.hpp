@@ -6,10 +6,16 @@
 #include <sys/types.h>
 #include <inttypes.h>
 
-#include "../hmac/hmac.hpp"
+#include "../mac/hmac.hpp"
+#include "../dsrp/common.hpp"
+#include "../dsrp/dsrpexception.hpp"
+#include "../dsrp/hashinterface.hpp"
+#include "../ossl/osslsha1.hpp"
 #include "aescounter.hpp"
-
+#include "encparams.hpp"
 #include "simplekeyderivator.hpp"
+
+
 // *--2-----8------------------12---*
 // | LEN | SEQ | ENC(DATA) | DIGEST |
 // *--------------------------------*
@@ -19,13 +25,14 @@
 // LEN = sizeof(ENCRYPT(DATA))
 // First encrypt and then the encrypted with associated data authenticate
 
-namespace DragonEncryptionLayer
+namespace DragonSRP
 {	
 	class DatagramEncryptor
 	{	
 		public:
 			DatagramEncryptor(const bytes &encryptionKey, const bytes &IV, const bytes &macKey);
-			void encryptAndAuthenticate(const bytes &in, bytes &out);
+			void encryptAndAuthenticate(unsigned char *plaintext, unsigned int plaintextLen, unsigned char *out, unsigned int *outLen); // throws
+			unsigned int getOverheadLen();
 			
 		private:	
 			AesCounter aesCtr;
