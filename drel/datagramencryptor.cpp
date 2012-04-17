@@ -35,9 +35,7 @@ namespace DragonSRP
 		// SET ENC(DATA)
 		// in -----encrypt-----> encdata
 		// ---> seqNum
-		printf("starting aesCtr.encrypt()\n");
 		aesCtr.encrypt(plaintext, out + DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE , plaintextLen); // Possible optim. direct to &out[lenSize + seqSize]
-		printf("finished aesCtr.encrypt()\n");
 		
 		// SET DIGEST
 		// Add trunc digest
@@ -46,8 +44,6 @@ namespace DragonSRP
 		memcpy(out + DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE + plaintextLen, digest, DSRP_ENCPARAM_TRUNCDIGEST_SIZE); // could be avoided (optim.)
 		
 		*outLen = plaintextLen + DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE + DSRP_ENCPARAM_TRUNCDIGEST_SIZE;
-		printf("plaintextLen: %d\n", plaintextLen);
-		printf("outLen: %d\n", *outLen);
 	}
 
 

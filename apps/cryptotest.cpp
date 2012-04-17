@@ -35,6 +35,13 @@ int sessionKey[128]  =   {0xFE, 0x5B, 0x4A, 0xCC, 0xFE, 0x5B, 0x4A, 0xCC,
 
 unsigned char data[] = "hello";
 
+void printVar(const char *szVarname, const unsigned char *data, unsigned int len)
+{
+	printf("%s: ", szVarname);
+	for (unsigned int i = 0; i < len; i++) printf("%02X", data[i]);
+	printf("\n");
+}
+
 int main(int argc, char *argv[])
 {	
 	try {
@@ -44,7 +51,7 @@ int main(int argc, char *argv[])
 		
 		SimpleKeyDerivator skd(bSessionKey, 32, 7, 20);
 		
-		printf("macKeySize: %d\n", skd.getClientMacKey().size());
+		// printf("macKeySize: %d\n", skd.getClientMacKey().size());
 		
 		DatagramEncryptor enc(skd.getClientEncryptionKey(), skd.getClientIV(), skd.getClientMacKey());
 		DatagramDecryptor dec(skd.getClientEncryptionKey(), skd.getClientIV(), skd.getClientMacKey());
@@ -52,6 +59,7 @@ int main(int argc, char *argv[])
 		printf("data: %s\n", data);
 		
 		unsigned int dataLen = sizeof(data);
+		printVar("data", data, dataLen);
 		
 		if (dataLen > MAX_DATA_LEN)
 		{
@@ -62,20 +70,17 @@ int main(int argc, char *argv[])
 		unsigned int encpacketLen;
 		unsigned char encpacket[enc.getOverheadLen() + MAX_DATA_LEN];
 
-		printf("starting ENcryption\n");
 		enc.encryptAndAuthenticate((unsigned char *)data, dataLen, encpacket, &encpacketLen);
-		printf("finished ENcryption\n");
 		
 		printf("encpacketLen: %d\n", encpacketLen);
+		printVar("encpacket", encpacket, encpacketLen);
 		
 		// Decrypt
 		unsigned int decpacketLen;
 		unsigned char decpacket[dec.getOverheadLen() + MAX_DATA_LEN];
 		uint64_t decseqnum;
 		
-		printf("starting DEcryption\n");
 		dec.decryptAndVerifyMac(encpacket, encpacketLen, decpacket, &decpacketLen, &decseqnum);
-		printf("finished DEcryption\n");
 		
 		if (dataLen != decpacketLen)
 		{

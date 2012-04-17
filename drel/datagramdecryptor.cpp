@@ -23,19 +23,11 @@ namespace DragonSRP
 	// Assumes that sizeof(data) >= inLen - getOverheadLen() 
 	void DatagramDecryptor::decryptAndVerifyMac(const unsigned char *in, unsigned int inLen, unsigned char *data, unsigned int *dataLen, uint64_t *seqNum)
 	{			
-		printf("KK1\n");
 		if (inLen <= DSRP_ENCPARAM_TOTALOVERHEAD) throw DsrpException("Malformed packet decryption attempt");
-		printf("KK2\n");
+		
 		// First we need to verify the digest so we first compute the correct digest an then compare it
 		unsigned char correctDigest[hmac.outputLen()];
-		printf("KK4\n");
-		
-		printf("inlen: %d\n", inLen);
-		printf("lennnnnn: %d\n", inLen - DSRP_ENCPARAM_TRUNCDIGEST_SIZE);
-		
 		hmac.hmac(in, inLen - DSRP_ENCPARAM_TRUNCDIGEST_SIZE, correctDigest);
-		
-		printf("KK5\n");
 		
 		// Compare
 		for (int i = 0; i < DSRP_ENCPARAM_TRUNCDIGEST_SIZE; i++)
@@ -43,29 +35,20 @@ namespace DragonSRP
 			if (correctDigest[i] != in[(inLen - DSRP_ENCPARAM_TRUNCDIGEST_SIZE) + i]) throw DsrpException("Mac signature inccorect. Possible attack detected.");
 		}
 		
-		printf("KK6\n");
-		
 		// Now we check if the data length is correct
 		uint16_t realDataLen = inLen - DSRP_ENCPARAM_TOTALOVERHEAD;
 		uint16_t signDataLen;
 		
 		memcpy(&signDataLen, in, DSRP_ENCPARAM_LEN_SIZE); // May cause endianess issues
 		
-		printf("realDataLen: %d\n", realDataLen);
-		printf("signDataLen: %d\n", signDataLen);
-		
 		if (realDataLen != signDataLen) throw DsrpException("Malformed packet data field length. Possible attack detected.");
 		*dataLen = signDataLen;
-		
-		
-		printf("KK7\n");
 		
 		memcpy(seqNum, in + DSRP_ENCPARAM_LEN_SIZE, DSRP_ENCPARAM_SEQ_SIZE); // Extract seqNum
 		
 		// Finally decrypt data
 		// in -----decrypt-----> data
 		aesCtr.encrypt(&in[DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE], data, realDataLen); // Possible optim. direct to &out[lenSize + seqSize] , // throws on error
-		printf("KK8\n");
 	}
 
 
