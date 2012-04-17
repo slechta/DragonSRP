@@ -20,30 +20,28 @@ namespace DragonSRP
 	
 	unsigned int DatagramEncryptor::getOverheadLen()
 	{
-		return DSRP_ENCPARAM_TOTALOVERHEAD;
+		return DSRP_ENCPARAM_SEQ_SIZE + DSRP_ENCPARAM_TRUNCDIGEST_SIZE;
 	}
 	
 	// Assumes sizeof(out) >= plaintextLen + getOverheadLen()   [MTU + OVERHEAD]
 	void DatagramEncryptor::encryptAndAuthenticate(const unsigned char *plaintext, unsigned int plaintextLen, unsigned char *out, unsigned int *outLen) // throws
 	{
-		uint16_t dataLen = plaintextLen; //  possible endianess inssues
 		uint64_t seqNum = aesCtr.getCurrentIV() + 1;
 		
-		memcpy(out, &dataLen, DSRP_ENCPARAM_LEN_SIZE); // set LEN
-		memcpy(out + DSRP_ENCPARAM_LEN_SIZE, &seqNum, DSRP_ENCPARAM_SEQ_SIZE); // set SEQ
+		memcpy(out, &seqNum, DSRP_ENCPARAM_SEQ_SIZE); // set SEQ
 		
 		// SET ENC(DATA)
 		// in -----encrypt-----> encdata
 		// ---> seqNum
-		aesCtr.encrypt(plaintext, out + DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE , plaintextLen); // Possible optim. direct to &out[lenSize + seqSize]
+		aesCtr.encrypt(plaintext, out + DSRP_ENCPARAM_SEQ_SIZE , plaintextLen); // Possible optim. direct to &out[lenSize + seqSize]
 		
 		// SET DIGEST
 		// Add trunc digest
 		unsigned char digest[hmac.outputLen()];
-		hmac.hmac(out, DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE + plaintextLen, digest);
-		memcpy(out + DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE + plaintextLen, digest, DSRP_ENCPARAM_TRUNCDIGEST_SIZE); // could be avoided (optim.)
+		hmac.hmac(out, DSRP_ENCPARAM_SEQ_SIZE + plaintextLen, digest);
+		memcpy(out + DSRP_ENCPARAM_SEQ_SIZE + plaintextLen, digest, DSRP_ENCPARAM_TRUNCDIGEST_SIZE); // could be avoided (optim.)
 		
-		*outLen = plaintextLen + DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE + DSRP_ENCPARAM_TRUNCDIGEST_SIZE;
+		*outLen = plaintextLen + DSRP_ENCPARAM_SEQ_SIZE + DSRP_ENCPARAM_TRUNCDIGEST_SIZE;
 	}
 
 

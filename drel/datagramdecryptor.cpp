@@ -17,13 +17,13 @@ namespace DragonSRP
 	
 	unsigned int DatagramDecryptor::getOverheadLen()
 	{
-		return DSRP_ENCPARAM_TOTALOVERHEAD;
+		return DSRP_ENCPARAM_SEQ_SIZE + DSRP_ENCPARAM_TRUNCDIGEST_SIZE;
 	}
 	
 	// Assumes that sizeof(data) >= inLen - getOverheadLen() 
 	void DatagramDecryptor::decryptAndVerifyMac(const unsigned char *in, unsigned int inLen, unsigned char *data, unsigned int *dataLen, uint64_t *seqNum)
 	{			
-		if (inLen <= DSRP_ENCPARAM_TOTALOVERHEAD) throw DsrpException("Malformed packet decryption attempt");
+		if (inLen <= DSRP_ENCPARAM_SEQ_SIZE + DSRP_ENCPARAM_TRUNCDIGEST_SIZE) throw DsrpException("Malformed packet decryption attempt");
 		
 		// First we need to verify the digest so we first compute the correct digest an then compare it
 		unsigned char correctDigest[hmac.outputLen()];
@@ -34,21 +34,14 @@ namespace DragonSRP
 		{
 			if (correctDigest[i] != in[(inLen - DSRP_ENCPARAM_TRUNCDIGEST_SIZE) + i]) throw DsrpException("Mac signature inccorect. Possible attack detected.");
 		}
+				
+		*dataLen = inLen - (DSRP_ENCPARAM_SEQ_SIZE + DSRP_ENCPARAM_TRUNCDIGEST_SIZE);
 		
-		// Now we check if the data length is correct
-		uint16_t realDataLen = inLen - DSRP_ENCPARAM_TOTALOVERHEAD;
-		uint16_t signDataLen;
+		memcpy(seqNum, in, DSRP_ENCPARAM_SEQ_SIZE); // Extract seqNum
 		
-		memcpy(&signDataLen, in, DSRP_ENCPARAM_LEN_SIZE); // May cause endianess issues
-		
-		if (realDataLen != signDataLen) throw DsrpException("Malformed packet data field length. Possible attack detected.");
-		*dataLen = signDataLen;
-		
-		memcpy(seqNum, in + DSRP_ENCPARAM_LEN_SIZE, DSRP_ENCPARAM_SEQ_SIZE); // Extract seqNum
-		
-		// Finally decrypt data
+		// Finally decrypt data	
 		// in -----decrypt-----> data
-		aesCtr.encrypt(&in[DSRP_ENCPARAM_LEN_SIZE + DSRP_ENCPARAM_SEQ_SIZE], data, realDataLen); // Possible optim. direct to &out[lenSize + seqSize] , // throws on error
+		aesCtr.encrypt(&in[DSRP_ENCPARAM_SEQ_SIZE], data, *dataLen); // Possible optim. direct to &out[lenSize + seqSize] , // throws on error
 	}
 
 
