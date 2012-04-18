@@ -43,8 +43,6 @@ unsigned long long get_usec()
 
 int main(int argc, char **argv)
 {	
-	clock_t start, finish;
-	
 	try {
 		// -- benchmark initialization
 		
@@ -77,10 +75,11 @@ int main(int argc, char **argv)
 		}
 		// End of user creation
 		
+		clock_t cStart, cFinish;
 		unsigned long long start;
 		unsigned long long duration;
 		
-		start = clock();
+		cStart = clock();
 		start = get_usec();
 		 
 		// ----- benchmark begin
@@ -95,9 +94,9 @@ int main(int argc, char **argv)
 		
 		duration = get_usec() - start;
 		
-		finish = clock();
+		cFinish = clock();
 		printf("Usec per call: %d\n", (int)(duration / ITERATIONS));
-		cout << "Time for sort (seconds): " << ((double)(finish - start))/CLOCKS_PER_SEC;
+		cout << "Time for sort (seconds): " << ((double)(cFinish - cStart))/CLOCKS_PER_SEC;
 		
 		cout << "end; ok" << endl;
 		return 0;		

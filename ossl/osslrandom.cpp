@@ -65,7 +65,8 @@ namespace DragonSRP
         
 		if (fp)
 		{
-			fread(buff, sizeof(buff), 1, fp);
+			size_t count = fread(buff, sizeof(unsigned char), sizeof(buff), fp);
+			if (count != sizeof(buff)) throw DsrpException("Could not initialize random number generator - small seed");
 			fclose(fp);
 		}
 		else throw DsrpException("Could not initialize random number generator");

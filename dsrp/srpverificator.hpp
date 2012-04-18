@@ -57,8 +57,8 @@ namespace DragonSRP
 			bytes BB;
 			bytes calc_M1;
 			bytes calc_M2;
-			bytes KK; // session key
 			bytes username;
+			bytes KK; // session key
 	};
 	
 }

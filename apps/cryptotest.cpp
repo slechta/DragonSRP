@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 			return -1;
 		}
 		
-		for (int i = 0; i < dataLen; i++)
+		for (unsigned int i = 0; i < dataLen; i++)
 		{
 			if (data[i] != decpacket[i])
 			{
