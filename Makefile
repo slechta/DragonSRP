@@ -30,7 +30,7 @@ OBJ-APPS =  apps/server_test.o \
             apps/create_user.o \
             apps/benchmark.o
 
-LIBS-OSSL = -lssl
+LIBS-OSSL = -lssl -lcrypto
 
 all: dsrp ossl apps
 
