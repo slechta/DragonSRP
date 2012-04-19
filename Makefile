@@ -4,7 +4,7 @@ CCC = g++
 ASM = yasm
 
 CCFLAGS = -Wall -I.
-CCCFLAGS = -Wall -ggdb -std=c++0x -I. -O3 -DDSRP_DANGEROUS_TESTING
+CCCFLAGS = -Wall -ggdb -std=c++0x -I. -O3 -DDSRP_DANGEROUS_TESTING -fpermissive
 
 OBJ-DSRP =  dsrp/conversionexception.o \
             dsrp/conversion.o \
@@ -44,9 +44,18 @@ OBJ-DREL =  drel/aescounter.o \
             drel/datagramencryptor.o \
             drel/datagramdecryptor.o
 
+OBJ-PROTOCOL =  protocol/esessionmanager.o \
+				protocol/edebug.o \
+				protocol/esession.o \
+				protocol/udtclient.o
+				
+OBJ-PROTOCOL-SERVER = protocol/main.o
+
 LIBS-OSSL = -lssl -lcrypto
 
-all: dsrp ossl app mac aes drel
+LIBS-PROTOCOL = -ludt -lpthread -lboost_system -lboost_thread
+
+all: dsrp ossl app mac aes drel protocol
 
 #build the object files for dsrp
 dsrp: $(OBJ-DSRP)
@@ -63,18 +72,23 @@ drel: dsrp ossl aes mac $(OBJ-DREL)
 #compile aes object files
 aes: $(OBJ-AES)
 
+#build protocol
+protocol: $(OBJ-PROTOCOL)
+
 # APPLICATION SECTION
 
 #build the app
-app:  app-srp app-hmac app-drel app-aes
+app:  app-srp app-hmac app-drel app-aes app-protocol
 
 app-srp: app-srp-server-test app-srp-client-test app-srp-create-user app-srp-benchmark app-srp-rfctest app-srp-qtest
 
-app-hmac: app-hmac-testvector
+app-hmac: mac app-hmac-testvector
 
-app-aes: app-aes-rfc3686
+app-aes: aes app-aes-rfc3686
 
-app-drel: app-drel-cryptotest
+app-drel: drel app-drel-cryptotest
+
+app-protocol: protocol app-protocol-server
 
 app-srp-server-test: dsrp ossl apps/server_test.o
 	$(CCC) apps/server_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/server_test $(LIBS-OSSL)
@@ -103,6 +117,9 @@ app-aes-rfc3686: aes aes/rfc3686.o
 app-drel-cryptotest: drel apps/cryptotest.o
 	$(CCC) apps/cryptotest.o $(OBJ-AES) $(OBJ-DREL) $(OBJ-MAC) $(OBJ-DSRP) $(OBJ-OSSL) -o apps/cryptotest $(LIBS-OSSL)
 	
+app-protocol-server: protocol $(OBJ-PROTOCOL-SERVER)
+	$(CCC) $(OBJ-PROTOCOL) $(OBJ-PROTOCOL-SERVER) -o apps/pserver $(LIBS-PROTOCOL) $(LIBS-OSSL)
+
 #tells how to make an *.o object file from an *.c file
 %.o: %.c
 	$(CC) -c $(CCFLAGS) $< -o $@

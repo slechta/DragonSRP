@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 		cout << "INFO: using RFC5054 Appendix A 1024 bit N,g pair" << endl;
 		OsslMathImpl math(hash, ng);
 		
-		SrpClient srpclient(math, random);
+		SrpClient srpclient(math, random, false);
 		
 		string strUsername;
 		cout << "username: ";
