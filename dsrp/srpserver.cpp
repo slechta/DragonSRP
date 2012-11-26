@@ -39,10 +39,11 @@
 namespace DragonSRP
 {
 	
-	SrpServer::SrpServer(LookupInterface &lookupInterface, MathInterface &mathInterface, RandomInterface &randomInterface) :
+	SrpServer::SrpServer(LookupInterface &lookupInterface, MathInterface &mathInterface, RandomInterface &randomInterface, bool interleaveKey) :
 		lookup(lookupInterface),
 		math(mathInterface),
-		random(randomInterface)
+		random(randomInterface),
+		interleave(interleaveKey)
 	{
 			
 	}	
@@ -53,7 +54,7 @@ namespace DragonSRP
 		User usr = lookup.getByName(username); // throws if not found
 		bytes M1, M2, K, B;
 		bytes b = random.getRandom(32); // length of salt, needs to be parametrized!
-		math.serverChallange(username, usr.getSalt(), usr.getVerificator(), AA, b, B, M1, M2, K); // throws on error
+		math.serverChallange(username, usr.getSalt(), usr.getVerificator(), AA, b, B, M1, M2, K, interleave); // throws on error
 		return SrpVerificator(username, usr.getSalt(), B, M1, M2, K);
 	}
 			
@@ -65,7 +66,7 @@ namespace DragonSRP
 			User usr = lookup.getByName(username); // throws if not found
 			bytes M1, M2, K, B;
 			
-			math.serverChallange(username, usr.getSalt(), usr.getVerificator(), AA, b, B, M1, M2, K); // throws on error
+			math.serverChallange(username, usr.getSalt(), usr.getVerificator(), AA, b, B, M1, M2, K, interleave); // throws on error
 			return SrpVerificator(username, usr.getSalt(), B, M1, M2, K);
 		}
 	#endif

@@ -40,14 +40,10 @@
 
 namespace DragonSRP
 {	
-	// return value must be deallocated with free!
-	unsigned char * Conversion::bytes2array(const bytes &in, int *lenout)
+	const unsigned char * Conversion::bytes2array(const bytes &in, int *lenout)
 	{
-		unsigned char *arr = (unsigned char*) malloc(sizeof(unsigned char) * in.size());
-		// should check if bytesIn==NULL !!!!!
-		copy(in.begin(), in.end(), arr);
 		*lenout = in.size();
-		return arr;
+		return &in[0];
 	}
 	
 	bytes Conversion::array2bytes(const unsigned char *in, int len)

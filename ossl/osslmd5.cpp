@@ -45,28 +45,35 @@
 *  written by Tim Hudson (tjh@cryptsoft.com)                        *
 @  =============================================================== */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <openssl/md5.h>
 
-#include <iostream>
-#include "osslconversion.hpp"
+#include "osslmd5.hpp"
+#include "dsrp/conversion.hpp"
 
 namespace DragonSRP
 {
-	void OsslConversion::bytes2bignum(const bytes &in, BIGNUM *out)
+	OsslMd5::~OsslMd5()
 	{
-		BN_bin2bn(&in[0], in.size(), out);
+		// empty
 	}
 	
-	void OsslConversion::bignum2bytes(BIGNUM *in, bytes& out)
+	void OsslMd5::hash(const unsigned char *in, unsigned int inLen, unsigned char *out)
 	{
-		out.resize(BN_num_bytes(in));
-		BN_bn2bin(in, &out[0]); 
+		MD5_CTX context;
+		MD5_Init(&context);
+		MD5_Update(&context, in, inLen);
+		MD5_Final(out, &context);
 	}
 	
-	void OsslConversion::printBignum(const BIGNUM *in)
+	unsigned int OsslMd5::outputLen()
 	{
-		char *str = BN_bn2hex(in);
-		std::cout << str << std::endl;
-		//OPENSSL_free(str);
-		free(str); // ugly!
+		return MD5_DIGEST_LENGTH;
+	}
+	
+	unsigned int OsslMd5::blockSize()
+	{
+		return 64;
 	}
 }

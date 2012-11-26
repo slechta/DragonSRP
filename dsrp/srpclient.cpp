@@ -38,9 +38,10 @@
 
 namespace DragonSRP
 {
-	SrpClient::SrpClient(MathInterface &mathInterface, RandomInterface &randomInterface) :
+	SrpClient::SrpClient(MathInterface &mathInterface, RandomInterface &randomInterface, bool interleaveKey) :
 		math(mathInterface),
-		random(randomInterface)
+		random(randomInterface),
+		interleave(interleaveKey)
 	{
 			
 	}
@@ -65,7 +66,7 @@ namespace DragonSRP
 	bytes SrpClient::getM1(bytes salt, bytes B, SrpClientAuthenticator &sca)
 	{
 		bytes M1, M2, K;
-		math.clientChallange(salt, sca.a, sca.A, B, sca.username, sca.password, M1, M2, K);
+		math.clientChallange(salt, sca.a, sca.A, B, sca.username, sca.password, M1, M2, K, interleave);
 		sca.M2_calculated = M2;
 		sca.K = K;
 		return M1;

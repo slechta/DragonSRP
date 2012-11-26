@@ -51,7 +51,7 @@ namespace DragonSRP
 		public:
 			// bytes returned from string are always without \0 termination
 		
-			static unsigned char *bytes2array(const bytes &in, int *lenout); // must free()
+			static const unsigned char *bytes2array(const bytes &in, int *lenout);
 			static bytes array2bytes(const unsigned char *in, int len);
 			
 			static bytes string2bytes(const std::string &str);

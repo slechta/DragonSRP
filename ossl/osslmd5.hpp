@@ -45,28 +45,23 @@
 *  written by Tim Hudson (tjh@cryptsoft.com)                        *
 @  =============================================================== */
 
+#ifndef DSRP_OSSL_MD5_HPP
+#define DSRP_OSSL_MD5_HPP
 
-#include <iostream>
-#include "osslconversion.hpp"
+#include "dsrp/common.hpp"
+#include "dsrp/hashinterface.hpp"
 
 namespace DragonSRP
 {
-	void OsslConversion::bytes2bignum(const bytes &in, BIGNUM *out)
+	class OsslMd5 : public HashInterface
 	{
-		BN_bin2bn(&in[0], in.size(), out);
-	}
-	
-	void OsslConversion::bignum2bytes(BIGNUM *in, bytes& out)
-	{
-		out.resize(BN_num_bytes(in));
-		BN_bn2bin(in, &out[0]); 
-	}
-	
-	void OsslConversion::printBignum(const BIGNUM *in)
-	{
-		char *str = BN_bn2hex(in);
-		std::cout << str << std::endl;
-		//OPENSSL_free(str);
-		free(str); // ugly!
-	}
+		public:
+			~OsslMd5();
+			void hash(const unsigned char *in, unsigned int inLen, unsigned char *out);
+			unsigned int outputLen();
+			unsigned int blockSize();
+	};
 }
+
+
+#endif

@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 		Ng ng = Ng::predefined(1024);
 		
 		OsslMathImpl math(hash, ng);
-		SrpServer srpserver(lookup, math, random);
+		SrpServer srpserver(lookup, math, random, false);
 		
 		// Begin user creation
 		std::string strUsername;

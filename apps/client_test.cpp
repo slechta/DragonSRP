@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 		Ng ng = Ng::predefined(1024);
 		OsslMathImpl math(hash, ng);
 		
-		SrpClient srpclient(math, random);
+		SrpClient srpclient(math, random, false);
 		
 		// ask user for credentials
 		string strUsername;
