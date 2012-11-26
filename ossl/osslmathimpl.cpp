@@ -226,8 +226,6 @@ namespace Ossl
 			Conversion::append(toHashM2, M1_out);
 			Conversion::append(toHashM2, K_out);
 			
-			// REPL: M2_out = hash.hash(toHashM2);
-			bytes M2_out;
 			M2_out.resize(hash.outputLen());
 			hash.hash(&toHashM2[0], toHashM2.size(), &M2_out[0]);
 			
@@ -350,9 +348,6 @@ namespace Ossl
 			Conversion::append(toHashM2, M1_out);
 			Conversion::append(toHashM2, K_out);
 			
-			
-			// REPL: M2_out = hash.hash(toHashM2);	
-			bytes M2_out;	
 			M2_out.resize(hash.outputLen());
 			hash.hash(&toHashM2[0], toHashM2.size(), &M2_out[0]);
 		}
