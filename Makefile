@@ -30,32 +30,9 @@ OBJ-OSSL =  ossl/osslmd5.o \
             ossl/osslmathimpl.o \
             ossl/osslconversion.o
 
-OBJ-AES =   aes/aeskey.o \
-            aes/aes_modes.o \
-            aes/aestab.o \
-			aes/aescrypt.o
-
-OBJ-MAC  =  mac/hmac.o \
-            mac/macexception.o
-
-OBJ-DREL =  drel/aescounter.o \
-            drel/aesexception.o \
-            drel/simplekeyderivator.o \
-            drel/datagramencryptor.o \
-            drel/datagramdecryptor.o
-
-OBJ-PROTOCOL =  protocol/esessionmanager.o \
-				protocol/edebug.o \
-				protocol/esession.o \
-				protocol/udtclient.o
-				
-OBJ-PROTOCOL-SERVER = protocol/main.o
-
 LIBS-OSSL = -lssl -lcrypto
 
-LIBS-PROTOCOL = -ludt -lpthread -lboost_system -lboost_thread
-
-all: dsrp ossl app mac aes drel protocol
+all: dsrp ossl app
 
 #build the object files for dsrp
 dsrp: $(OBJ-DSRP)
@@ -63,32 +40,13 @@ dsrp: $(OBJ-DSRP)
 #to build ossl we first need to have build dsrp
 ossl: dsrp $(OBJ-OSSL)
 
-#build mac
-mac: dsrp $(OBJ-MAC)
-
-#build drel DRagon Encryption Layer
-drel: dsrp ossl aes mac $(OBJ-DREL)
-
-#compile aes object files
-aes: $(OBJ-AES)
-
-#build protocol
-protocol: $(OBJ-PROTOCOL)
 
 # APPLICATION SECTION
 
 #build the app
-app:  app-srp app-hmac app-drel app-aes app-protocol
+app:  app-srp
 
 app-srp: app-srp-server-test app-srp-client-test app-srp-create-user app-srp-benchmark app-srp-rfctest app-srp-qtest
-
-app-hmac: mac app-hmac-testvector
-
-app-aes: aes app-aes-rfc3686
-
-app-drel: drel app-drel-cryptotest
-
-app-protocol: protocol app-protocol-server
 
 app-srp-server-test: dsrp ossl apps/server_test.o
 	$(CCC) apps/server_test.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/server_test $(LIBS-OSSL)
@@ -108,18 +66,6 @@ app-srp-rfctest: dsrp ossl apps/rfc_test.o
 app-srp-qtest: dsrp ossl apps/qtest.o
 	$(CCC) apps/qtest.o $(OBJ-DSRP) $(OBJ-OSSL) -o apps/qtest $(LIBS-OSSL)
 	
-app-hmac-testvector: dsrp ossl mac apps/hmac_md5_testvector.o
-	$(CCC) apps/hmac_md5_testvector.o $(OBJ-DSRP) $(OBJ-MAC) $(OBJ-OSSL) -o apps/hmac_md5_testvector $(LIBS-OSSL)
-
-app-aes-rfc3686: aes aes/rfc3686.o
-	$(CCC) aes/rfc3686.o $(OBJ-AES) -o aes/rfc3686
-	
-app-drel-cryptotest: drel apps/cryptotest.o
-	$(CCC) apps/cryptotest.o $(OBJ-AES) $(OBJ-DREL) $(OBJ-MAC) $(OBJ-DSRP) $(OBJ-OSSL) -o apps/cryptotest $(LIBS-OSSL)
-	
-app-protocol-server: protocol $(OBJ-PROTOCOL-SERVER)
-	$(CCC) $(OBJ-PROTOCOL) $(OBJ-PROTOCOL-SERVER) -o apps/pserver $(LIBS-PROTOCOL) $(LIBS-OSSL)
-
 #tells how to make an *.o object file from an *.c file
 %.o: %.c
 	$(CC) -c $(CCFLAGS) $< -o $@
@@ -137,7 +83,6 @@ clean::
 	rm -f apps/client_test
 	rm -f apps/create_user
 	rm -f apps/benchmark
-	rm -f apps/hmac_md5_testvector
 	rm -f apps/*.o
 	rm -f mac/*.o
 	rm -f aes/*.o
