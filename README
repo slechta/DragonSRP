@@ -1,27 +1,22 @@
 DragonSRP
 ---------
-This C++ library implements SRP6a protocol. The library is intended to be portable and modular.
-This means you can easily implement your own random generator instead of the OpenSSL included.
+This C++ library implements SRP6a protocol. The library is intended to be portable and modular
+and easy to use.
 
-Or you can change the way of storing users simply by writing your own class
-by inerhiting UserLookup interface.
+The implementation is compliant with RFC2945 (The SRP Authentication and Key Exchange System).
+Test program with test vectors is provided to ensure compliance.
 
-Or you can change the hash function.
+Notes:
+* The OpenSSL math functions can be easily exchanged 
+  by creating a new class implementing the MathInterface.
+  (You do not need explicitly OpenSSL.)
 
-The OpenSSL math functions can be easily exchanged 
-by creating a new class implementing the MathInterface.
-(You do NOT need to change the actual code.)
+* The folder dsrp can be compiled without the -lssl flag.
 
-The folder dsrp can be compiled without the -lssl flag.
+* Examples are in the app folder.
 
-Note1: Examples are in the app folder.
-Note2: This project is currently in development, although the examples are working.
-       this means that some things are not yet tested.
-Note3: I was lazy to change the name and email first time when creating git repository, so
-       there is "draco <draco@allstar.pilsfree.czf>" in git tree which is my hostname.
-
-Note4: For unknown reason sometimes is needed to run "make" TWICE!!!
+* more info on wiki page: https://github.com/slechta/DragonSRP/wiki
 
 Thanks for reading.
 Pavel Slechta <slechta@email.cz>
-Let me know if you have any questions.
+Let me know if you have any questions. (And don't be afraid to ask.)
